@@ -115,11 +115,11 @@
         @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; animation: fadeIn 0.15s ease-out; }
-        .modal-box { background-color: var(--bg-card); border-radius: var(--radius-card); padding: 24px; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); color: var(--text-light); animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.08); }
+        .modal-box { background-color: var(--bg-card); border-radius: var(--radius-card); padding: 24px; width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); color: var(--text-light); animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid rgba(255,255,255,0.08); }
         .modal-msg { font-size: 24px; text-align: center; line-height: 1.2; }
         .modal-input { width: 100%; padding: 12px; border-radius: 10px; background: #2c2c2e; border: 2px solid #3a3a3c; color: #fff; font-size: 24px; text-align: center; outline: none; font-family: 'VT323', monospace; }
         .modal-input:focus { border-color: var(--accent-blue); }
-        .modal-list-item { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; padding: 12px; border-radius: 10px; font-size: 20px;}
+        .modal-list-item { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; padding: 10px 12px; border-radius: 10px; font-size: 20px; }
     </style>
 </head>
 <body>
@@ -219,7 +219,7 @@
             <button class="btn btn-green" style="justify-content: center;" onclick="closeModal()">OK</button>
         </div>
         
-        <!-- CONFIRMATION POP-UP (FOR LOCKING HABITS) -->
+        <!-- CONFIRMATION POP-UP -->
         <div id="confirm-box" class="modal-box" style="display: none;">
             <div id="confirm-msg" class="modal-msg"></div>
             <div class="btn-row" style="margin-bottom: 0;">
@@ -238,15 +238,15 @@
             </div>
         </div>
 
-        <!-- EDIT ROUTINE MENU -->
+        <!-- EDIT & REORDER ROUTINE MENU -->
         <div id="edit-routine-box" class="modal-box" style="display: none;">
-            <div class="modal-msg" style="margin-bottom:0;">EDIT ROUTINE</div>
-            <div id="edit-list-container" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+            <div class="modal-msg" style="margin-bottom:0;">EDIT & REORDER</div>
+            <div id="edit-list-container" style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
             
-            <div style="border-top: 1px solid #3a3a3c; padding-top: 16px; display:flex; gap:8px;">
-                <input type="text" id="new-h-icon" class="modal-input" placeholder="IC" maxlength="2" style="width: 25%; padding:12px 4px;">
-                <input type="text" id="new-h-name" class="modal-input" placeholder="HABIT NAME" style="flex-grow:1; padding:12px 8px;">
-                <input type="number" id="new-h-pay" class="modal-input" placeholder="+0.25" step="0.05" style="width: 30%; padding:12px 4px;">
+            <div style="border-top: 1px solid #3a3a3c; padding-top: 16px; display:flex; gap:6px;">
+                <input type="text" id="new-h-icon" class="modal-input" placeholder="IC" maxlength="2" style="width: 22%; padding:10px 2px;">
+                <input type="text" id="new-h-name" class="modal-input" placeholder="HABIT NAME" style="flex-grow:1; padding:10px 6px;">
+                <input type="number" id="new-h-pay" class="modal-input" placeholder="+0.25" step="0.05" style="width: 28%; padding:10px 2px;">
             </div>
             
             <div class="btn-row" style="margin-bottom: 0;">
@@ -283,7 +283,7 @@
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
         const DEFAULT_STATE = {
-            version: 1.3,
+            version: 1.4,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -389,19 +389,36 @@
             const container = document.getElementById('edit-list-container');
             container.innerHTML = '';
             state.dailyRoutine.forEach((habit, index) => {
+                let upBtn = index > 0 ? `<button style="background:none; border:none; color:var(--text-light); font-size:18px; cursor:pointer;" onclick="moveHabit(${index}, -1)">⬆️</button>` : `<span style="opacity:0.2;">⬆️</span>`;
+                let downBtn = index < state.dailyRoutine.length - 1 ? `<button style="background:none; border:none; color:var(--text-light); font-size:18px; cursor:pointer;" onclick="moveHabit(${index}, 1)">⬇️</button>` : `<span style="opacity:0.2;">⬇️</span>`;
                 let deleteBtn = habit.checked 
-                    ? `<span style="font-size:14px; color:var(--text-muted);">LOCKED</span>` 
-                    : `<button style="background:none; border:none; color:var(--accent-red); font-size:24px; cursor:pointer;" onclick="deleteHabit(${index})">❌</button>`;
+                    ? `<span style="font-size:13px; color:var(--text-muted);">LOCKED</span>` 
+                    : `<button style="background:none; border:none; color:var(--accent-red); font-size:20px; cursor:pointer;" onclick="deleteHabit(${index})">❌</button>`;
                 
                 container.innerHTML += `
                     <div class="modal-list-item">
-                        <span>[${habit.icon}] ${habit.name}</span>
-                        <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            ${upBtn} ${downBtn}
+                            <span>[${habit.icon}]</span>
+                        </div>
+                        <span style="flex-grow:1; margin-left:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${habit.name}</span>
+                        <div style="display:flex; align-items:center; gap:8px;">
                             <span style="color:var(--accent-blue);">+${habit.payout.toFixed(2)}</span>
                             ${deleteBtn}
                         </div>
                     </div>`;
             });
+        }
+
+        function moveHabit(index, direction) {
+            triggerHaptic();
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= state.dailyRoutine.length) return;
+            
+            const item = state.dailyRoutine.splice(index, 1)[0];
+            state.dailyRoutine.splice(targetIndex, 0, item);
+            saveState();
+            renderEditList();
         }
 
         function addHabit() {
@@ -476,7 +493,6 @@
             }
         }
 
-        // CONFIRMATION WRAPPERS FOR LOCK-IN
         function promptRoutineHabit(index) {
             triggerHaptic();
             const habit = state.dailyRoutine[index];
