@@ -141,7 +141,7 @@
         .log-label { font-size: 13px; color: var(--text-muted); }
         .log-val { font-size: 20px; margin-top: 2px; color: #fff; }
 
-        /* Timer Widget */
+        /* Timer Widgets */
         .timer-banner {
             background-color: #1a1a1a;
             border: 2px dashed #666;
@@ -337,6 +337,17 @@
                 </div>
             </div>
 
+            <!-- LIVE FOCUS POMODORO WIDGET (HIDDEN UNTIL ACTIVE) -->
+            <div id="focus-card-wrapper" style="display: none;">
+                <div class="timer-banner" style="border-color: #fff;">
+                    <div>
+                        <span class="stat-label" style="display:block; font-size:12px; color:#fff;">🍅 FOCUS SESSION (DO NOT LEAVE)</span>
+                        <span class="timer-display" id="focus-countdown">25:00</span>
+                    </div>
+                    <button class="btn btn-red" style="padding: 8px 14px; font-size:16px; margin-bottom:0;" onclick="abortFocusSession()">ABORT</button>
+                </div>
+            </div>
+
             <!-- TODAY'S ACTIVITY LOG -->
             <div style="border-top: 1px dashed #333; padding-top: 10px;">
                 <span class="stat-label" style="display:block; margin-bottom:6px;">📅 TODAY'S LEDGER</span>
@@ -372,9 +383,15 @@
 
             <div style="margin-top: 10px; border-top: 1px dashed #333; padding-top: 10px;">
                 <div class="task-details" style="margin-left: 0; margin-bottom: 10px;">
-                    <div class="task-title">STUDY LOG</div>
+                    <div class="task-title">STUDY LOG & POMODORO</div>
                     <div class="task-subtitle" id="study-payout">+0.00 TOKENS</div>
                 </div>
+                
+                <div class="btn-row" style="margin-bottom: 8px;">
+                    <button class="btn btn-half" style="font-size:18px; padding:10px;" onclick="startFocusPomodoro(25)">25M FOCUS (+0.62)</button>
+                    <button class="btn btn-half" style="font-size:18px; padding:10px;" onclick="startFocusPomodoro(50)">50M FOCUS (+1.25)</button>
+                </div>
+
                 <div class="study-controls">
                     <button class="study-btn" onclick="adjustStudy(-1)">-</button>
                     <div class="study-display"><span id="study-count">0</span> HRS</div>
@@ -565,7 +582,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 3.5,
+            version: 3.6,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -575,7 +592,8 @@
             webhookUrl: "",
             soundEnabled: true,
             timerEndTime: null,
-            timerMinutesTotal: 0,
+            focusEndTime: null,
+            focusMinutesTotal: 0,
             dailyRoutine: [
                 { id: 'h1', icon: 'MD', name: 'MEDS (DAY)', payout: 0.25, checked: false },
                 { id: 'h2', icon: 'SH', name: 'GOOBA SHAKE', payout: 0.50, checked: false },
@@ -611,6 +629,7 @@
         let pendingSpendMins = 0;
         let pendingSpendName = "";
         let countdownInterval = null;
+        let focusInterval = null;
 
         function toggleSound() {
             triggerHaptic();
@@ -661,6 +680,7 @@
             state.lastDate = todayStr;
             state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
             state.timerEndTime = null;
+            state.focusEndTime = null;
             saveState();
         }
 
@@ -833,6 +853,82 @@
             }, 1000);
         }
 
+        // Focus Pomodoro Flow
+        function startFocusPomodoro(minutes) {
+            triggerHaptic();
+            if (state.focusEndTime) {
+                customAlert("FOCUS SESSION ALREADY IN PROGRESS!");
+                return;
+            }
+            requestNotificationPermission();
+            state.focusEndTime = Date.now() + (minutes * 60 * 1000);
+            state.focusMinutesTotal = minutes;
+            saveState();
+            runFocusEngine();
+            sendWebhook("FOCUS STARTED", `🍅 **${minutes}M Focus Session** started! No leaving the app! 🛡️`);
+        }
+
+        function abortFocusSession() {
+            triggerHaptic();
+            state.focusEndTime = null;
+            if (focusInterval) clearInterval(focusInterval);
+            saveState();
+            document.getElementById('focus-card-wrapper').style.display = 'none';
+            customAlert("FOCUS SESSION ABORTED. NO TOKENS EARNED.");
+            sendWebhook("FOCUS ABORTED", "❌ Focus session was cancelled early.");
+        }
+
+        function runFocusEngine() {
+            if (focusInterval) clearInterval(focusInterval);
+            document.getElementById('focus-card-wrapper').style.display = 'block';
+
+            focusInterval = setInterval(() => {
+                if (!state.focusEndTime) {
+                    clearInterval(focusInterval);
+                    document.getElementById('focus-card-wrapper').style.display = 'none';
+                    return;
+                }
+
+                const remaining = state.focusEndTime - Date.now();
+                if (remaining <= 0) {
+                    clearInterval(focusInterval);
+                    const mins = state.focusMinutesTotal;
+                    state.focusEndTime = null;
+                    
+                    // Reward calculation: 1 hr = 1.50 tokens -> proportional to minutes
+                    const earnedTokens = Math.round((mins / 60) * 1.50 * 100) / 100;
+                    state.studyBlocks += (mins / 60);
+                    state.tokens += earnedTokens;
+                    state.todayLog.earned += earnedTokens;
+                    saveState();
+
+                    document.getElementById('focus-card-wrapper').style.display = 'none';
+                    playAlarmBeeps();
+                    triggerHaptic();
+                    fireNativeNotification("🍅 TORO TRACKER // FOCUS COMPLETED", `Great job! Earned +${earnedTokens.toFixed(2)} tokens!`);
+                    sendWebhook("FOCUS COMPLETED", `🍅 **${mins}M Focus Session completed!** Earned **+${earnedTokens.toFixed(2)} tokens** 🎉`);
+                    customAlert(`🍅 FOCUS COMPLETE! +${earnedTokens.toFixed(2)} TOKENS EARNED!`);
+                } else {
+                    const totalSecs = Math.floor(remaining / 1000);
+                    const mins = Math.floor(totalSecs / 60);
+                    const secs = totalSecs % 60;
+                    document.getElementById('focus-countdown').innerText = 
+                        String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                }
+            }, 1000);
+        }
+
+        // Tab Switch Protection Listener
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden && state.focusEndTime) {
+                state.focusEndTime = null;
+                if (focusInterval) clearInterval(focusInterval);
+                saveState();
+                document.getElementById('focus-card-wrapper').style.display = 'none';
+                sendWebhook("FOCUS FAILED", "🚨 **Focus session cancelled!** User left the app/tab.");
+            }
+        });
+
         function openEditRoutine(mode) {
             currentEditMode = mode;
             triggerHaptic(); hideAllModals();
@@ -962,13 +1058,14 @@
             });
 
             const studyHours = state.studyBlocks || 0;
-            document.getElementById('study-count').innerText = studyHours;
+            document.getElementById('study-count').innerText = studyHours.toFixed(2);
             document.getElementById('study-payout').innerText = "+" + (studyHours * 1.50).toFixed(2) + " TOKENS";
         }
 
         function saveState() { 
             state.tokens = Math.round(state.tokens * 100) / 100;
             state.vaultCash = Math.round(state.vaultCash * 100) / 100;
+            state.studyBlocks = Math.round(state.studyBlocks * 100) / 100;
             localStorage.setItem('toroTrackerApp', JSON.stringify(state)); 
             updateUI(); 
         }
@@ -1022,15 +1119,15 @@
             triggerHaptic();
             if (delta > 0) {
                 playDing(); 
-                state.studyBlocks++; 
+                state.studyBlocks += 1.00; 
                 state.tokens += 1.50;
                 state.todayLog.earned += 1.50;
                 saveState();
                 sendWebhook("STUDY LOGGED", `💻 Logged **1 hr study block** (+1.50 tokens) | Total Hours: ${state.studyBlocks}`);
-            } else if (delta < 0 && state.studyBlocks > 0) {
+            } else if (delta < 0 && state.studyBlocks >= 1.00) {
                 if (state.tokens >= 1.50) {
                     playBloop(); 
-                    state.studyBlocks--; 
+                    state.studyBlocks -= 1.00; 
                     state.tokens -= 1.50;
                     state.todayLog.earned = Math.max(0, state.todayLog.earned - 1.50);
                     saveState();
@@ -1102,6 +1199,9 @@
         updateUI();
         if (state.timerEndTime && state.timerEndTime > Date.now()) {
             startCountdownEngine();
+        }
+        if (state.focusEndTime && state.focusEndTime > Date.now()) {
+            runFocusEngine();
         }
     </script>
 </body>
