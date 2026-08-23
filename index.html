@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Token Vault</title>
+    <style>
+        /* OBSIDIAN STEALTH THEME */
+        :root {
+            --bg-main: #1e1e1e;
+            --bg-card: #252526;
+            --text-main: #d4d4d4;
+            --text-muted: #858585;
+            --border-color: #3c3c3c;
+            --accent-bg: #2d4539; /* Muted green for vault */
+            --accent-text: #68b382;
+            --tag-bg: #2b3a42; /* Muted teal for tokens */
+            --tag-text: #569cd6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 20px;
+            padding-bottom: 50px;
+        }
+
+        /* Dashboard Headers */
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .token-val { color: var(--tag-text); }
+        .vault-val { color: var(--accent-text); }
+
+        /* Section Styling */
+        h2 {
+            font-size: 14px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        /* Checkboxes & Lists */
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-item {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .task-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .payout {
+            font-family: monospace;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--text-muted);
+            border-radius: 4px;
+            background-color: transparent;
+            position: relative;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: var(--tag-text);
+            border-color: var(--tag-text);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✔';
+            position: absolute;
+            color: var(--bg-main);
+            font-size: 14px;
+            top: -1px;
+            left: 3px;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .btn:active {
+            background-color: var(--border-color);
+        }
+
+        .btn-study {
+            background-color: var(--tag-bg);
+            border-color: var(--tag-text);
+            color: var(--tag-text);
+        }
+        
+        .btn-spend {
+            background-color: #3a2525;
+            border-color: #c94f4f;
+            color: #ff8a8a;
+        }
+
+        .btn-vault {
+            background-color: var(--accent-bg);
+            border-color: var(--accent-text);
+            color: var(--accent-text);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <div class="stat-card">
+            <span class="stat-label">Tokens</span>
+            <span class="stat-value token-val" id="token-display">0.00</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Vault</span>
+            <span class="stat-value vault-val" id="vault-display">$0.00</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Daily Non-Negotiables</h2>
+        <ul class="task-list">
+            <label class="task-item">
+                <div class="task-label"><input type="checkbox" id="chk-medsDay" onchange="toggleHabit('medsDay', 0.25)"> 💊 Meds (Day)</div>
+                <span class="payout">+0.25</span>
+            </label>
+            <label class="task-item">
+                <div class="task-label"><input type="checkbox" id="chk-shake" onchange="toggleHabit('shake', 0.50)"> 🥤 Gooba Shake</div>
+                <span class="payout">+0.50</span>
+            </label>
+            <label class="task-item">
+                <div class="task-label"><input type="checkbox" id="chk-reset" onchange="toggleHabit('reset', 0.25)"> 🧹 3-Min Reset</div>
+                <span class="payout">+0.25</span>
+            </label>
+            <label class="task-item">
+                <div class="task-label"><input type="checkbox" id="chk-medsNight" onchange="toggleHabit('medsNight', 0.25)"> 💊 Meds (Night)</div>
+                <span class="payout">+0.25</span>
+            </label>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Flexible Engine</h2>
+        <ul class="task-list" style="margin-bottom: 10px;">
+            <label class="task-item">
+                <div class="task-label"><input type="checkbox" id="chk-gym" onchange="toggleHabit('gym', 1.00)"> 🏋️ Gym / Lift</div>
+                <span class="payout">+1.00</span>
+            </label>
+        </ul>
+        <button class="btn btn-study" onclick="logStudy()">
+            <span>💻 Log 1-Hour Study</span>
+            <span class="payout" style="color: inherit;">+1.50</span>
+        </button>
+    </div>
+
+    <div class="section">
+        <h2>Spend Menu</h2>
+        <button class="btn btn-spend" onclick="spendDowntime()">
+            <span>🛋️ 1 hr Downtime</span>
+            <span class="payout" style="color: inherit;">-1.00</span>
+        </button>
+        <button class="btn btn-vault" onclick="bankToVault()">
+            <span>💵 Bank to Vault</span>
+            <span class="payout" style="color: inherit;">-1.00 ➔ $2.50</span>
+        </button>
+    </div>
+
+    <script>
+        // Data Structure
+        let state = JSON.parse(localStorage.getItem('tokenApp')) || {
+            tokens: 0,
+            vaultCash: 0,
+            lastDate: new Date().toLocaleDateString(),
+            habits: { medsDay: false, shake: false, reset: false, medsNight: false, gym: false }
+        };
+
+        // Midnight Reset Logic
+        const today = new Date().toLocaleDateString();
+        if (state.lastDate !== today) {
+            state.habits = { medsDay: false, shake: false, reset: false, medsNight: false, gym: false };
+            state.lastDate = today;
+            saveState();
+        }
+
+        // Initialize UI
+        function updateUI() {
+            document.getElementById('token-display').innerText = state.tokens.toFixed(2);
+            document.getElementById('vault-display').innerText = "$" + state.vaultCash.toFixed(2);
+            
+            // Set checkboxes based on saved state
+            document.getElementById('chk-medsDay').checked = state.habits.medsDay;
+            document.getElementById('chk-shake').checked = state.habits.shake;
+            document.getElementById('chk-reset').checked = state.habits.reset;
+            document.getElementById('chk-medsNight').checked = state.habits.medsNight;
+            document.getElementById('chk-gym').checked = state.habits.gym;
+        }
+
+        function saveState() {
+            localStorage.setItem('tokenApp', JSON.stringify(state));
+            updateUI();
+        }
+
+        // Logic Functions
+        function toggleHabit(habitKey, value) {
+            const isChecked = document.getElementById(`chk-${habitKey}`).checked;
+            state.habits[habitKey] = isChecked;
+            
+            if (isChecked) {
+                state.tokens += value;
+            } else {
+                state.tokens -= value;
+            }
+            saveState();
+        }
+
+        function logStudy() {
+            state.tokens += 1.50;
+            saveState();
+        }
+
+        function spendDowntime() {
+            if (state.tokens >= 1.00) {
+                state.tokens -= 1.00;
+                saveState();
+            } else {
+                alert("Not enough tokens! Put in the work first.");
+            }
+        }
+
+        function bankToVault() {
+            if (state.tokens >= 1.00) {
+                state.tokens -= 1.00;
+                state.vaultCash += 2.50;
+                saveState();
+            } else {
+                alert("Not enough tokens to bank!");
+            }
+        }
+
+        // Run on load
+        updateUI();
+    </script>
+</body>
+</html>
