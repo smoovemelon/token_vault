@@ -3,369 +3,600 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#1e1e1e">
+    <meta name="theme-color" content="#eef0f2">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Token Vault</title>
+    <meta name="apple-mobile-web-app-title" content="Gooba Tracker">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Gooba Tracker</title>
+    
+    <!-- INLINE PIXEL CAT ICON (Black lines, White Background) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        /* OBSIDIAN STEALTH THEME */
+        /* HABIT PIXEL INSPIRED THEME */
         :root {
-            --bg-main: #1e1e1e;
-            --bg-card: #252526;
-            --bg-subtle: #2d2d2d;
-            --text-main: #d4d4d4;
-            --text-muted: #858585;
-            --border-color: #3c3c3c;
-            --accent-bg: #223b2e;
-            --accent-border: #386b4f;
-            --accent-text: #68b382;
-            --tag-bg: #21323d;
-            --tag-border: #3b5a70;
-            --tag-text: #569cd6;
-            --danger-bg: #382222;
-            --danger-border: #6e3333;
-            --danger-text: #ff7b7b;
+            --bg-main: #eef0f2;
+            --bg-card: #1c1c1e;
+            --bg-icon: #ffffff;
+            --bg-check-off: #3a3a3c;
+            --bg-check-on: #c5f0a4;
+            
+            --text-dark: #1c1c1e;
+            --text-light: #ffffff;
+            --text-muted: #8e8e93;
+            
+            --accent-blue: #90d4f7;
+            --accent-red: #ff8a8a;
+            
+            --radius-card: 24px;
+            --radius-btn: 14px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, sans-serif;
+            font-family: 'VT323', monospace;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            text-transform: uppercase;
         }
 
         body {
             background-color: var(--bg-main);
-            color: var(--text-main);
+            color: var(--text-dark);
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            padding: 16px 16px calc(24px + env(safe-area-inset-bottom)) 16px;
+            padding: 24px 16px calc(40px + env(safe-area-inset-bottom)) 16px;
         }
 
         .container {
             width: 100%;
-            max-width: 440px; /* Perfect reading & tapping width on Google Pixel & mobile */
+            max-width: 440px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* Top Dashboard */
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 14px 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* Top Header */
+        .header {
+            text-align: left;
             margin-bottom: 4px;
         }
 
-        .stat-value {
-            font-size: 26px;
-            font-weight: 700;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        .header h1 {
+            font-size: 42px;
+            line-height: 0.9;
+            color: var(--text-dark);
+            letter-spacing: 1px;
         }
 
-        .token-val { color: var(--tag-text); }
-        .vault-val { color: var(--accent-text); }
+        .header p {
+            font-size: 22px;
+            color: #666;
+            margin-top: 4px;
+        }
 
-        /* Section Styling */
-        h2 {
-            font-size: 13px;
+        /* Cards */
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-card);
+            padding: 20px;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        /* Dashboard Stats */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background-color: #2c2c2e;
+            border-radius: var(--radius-btn);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .streak-box {
+            grid-column: span 2;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 18px;
             color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 6px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.5px;
         }
 
-        .section {
-            display: flex;
-            flex-direction: column;
+        .stat-value {
+            font-size: 36px;
+            margin-top: 4px;
         }
+        
+        .val-token { color: var(--accent-blue); }
+        .val-vault { color: var(--bg-check-on); }
+        .val-streak { color: #ffd60a; font-size: 28px; }
 
-        /* Checklists */
+        /* Task Items */
         .task-list {
-            list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 16px;
         }
 
         .task-item {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            min-height: 48px; /* High-precision tap target */
-            padding: 10px 14px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: background 0.15s ease;
-        }
-
-        .task-item:active {
-            background-color: var(--bg-subtle);
-        }
-
-        .task-label {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 15px;
-        }
-
-        .payout {
-            font-family: ui-monospace, monospace;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        input[type="checkbox"] {
-            appearance: none;
-            width: 22px;
-            height: 22px;
-            border: 1.5px solid var(--text-muted);
-            border-radius: 6px;
-            background-color: transparent;
-            position: relative;
             cursor: pointer;
         }
 
-        input[type="checkbox"]:checked {
-            background-color: var(--tag-text);
-            border-color: var(--tag-text);
+        .task-icon {
+            width: 44px;
+            height: 44px;
+            background-color: var(--bg-icon);
+            color: var(--text-dark);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
         }
 
-        input[type="checkbox"]:checked::after {
-            content: '✓';
-            position: absolute;
-            color: var(--bg-main);
-            font-size: 15px;
-            font-weight: bold;
-            top: 0px;
-            left: 4px;
-        }
-
-        /* Study Stepper Card */
-        .study-stepper-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 14px;
+        .task-details {
+            flex-grow: 1;
+            margin-left: 14px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 8px;
         }
 
-        .study-header {
+        .task-title {
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .task-subtitle {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Custom Checkbox Button */
+        .task-check {
+            width: 44px;
+            height: 44px;
+            background-color: var(--bg-check-off);
+            border-radius: 12px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--text-dark);
+            flex-shrink: 0;
+            transition: background-color 0.1s;
         }
 
-        .study-title {
-            font-size: 15px;
-            font-weight: 500;
+        .task-check.checked {
+            background-color: var(--bg-check-on);
         }
 
+        /* Study Controls */
         .study-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #2c2c2e;
+            border-radius: var(--radius-btn);
+            padding: 8px;
+        }
+
+        .study-btn {
+            width: 44px;
+            height: 44px;
+            background-color: var(--bg-icon);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 10px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .study-btn:active { background-color: #d1d1d6; }
+
+        .study-display {
+            font-size: 26px;
+            text-align: center;
+            flex-grow: 1;
         }
 
         /* Buttons */
         .btn {
-            min-height: 48px;
-            background-color: var(--bg-card);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 12px 14px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
+            background-color: #2c2c2e;
+            color: var(--text-light);
+            border: none;
+            padding: 16px;
+            border-radius: var(--radius-btn);
+            font-size: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.08s ease, filter 0.15s ease;
+            width: 100%;
         }
 
-        .btn:active {
-            transform: scale(0.985);
-            filter: brightness(1.2);
+        .btn:active { background-color: #3a3a3c; }
+        
+        .btn-half { width: calc(50% - 6px); display: inline-flex; justify-content: center; }
+        .btn-row { display: flex; gap: 12px; margin-bottom: 12px; }
+        
+        .btn-green { background-color: var(--bg-check-on); color: var(--text-dark); }
+        .btn-green:active { background-color: #aadb85; }
+
+        /* Settings */
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
         }
 
-        .btn-stepper {
-            justify-content: center;
-            gap: 6px;
-            font-size: 14px;
+        .data-text {
+            font-size: 20px;
+            color: #888;
+            cursor: pointer;
+            padding: 10px;
         }
 
-        .btn-study-add {
-            background-color: var(--tag-bg);
-            border-color: var(--tag-border);
-            color: var(--tag-text);
+        /* SMOOTH ANIMATIONS */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
-        .btn-study-sub {
-            background-color: var(--bg-subtle);
-            border-color: var(--border-color);
-            color: var(--text-muted);
+        /* CUSTOM MODAL POP-UPS */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; padding: 20px;
+            animation: fadeIn 0.15s ease-out;
         }
+        .modal-box {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-card);
+            padding: 24px; width: 100%; max-width: 360px;
+            display: flex; flex-direction: column; gap: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            color: var(--text-light);
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-msg { font-size: 24px; text-align: center; line-height: 1.2; }
+        .modal-input {
+            width: 100%; padding: 16px; border-radius: var(--radius-btn);
+            background: #2c2c2e; border: 2px solid #3a3a3c; color: #fff;
+            font-size: 28px; text-align: center; outline: none;
+            font-family: 'VT323', monospace;
+        }
+        .modal-input:focus { border-color: var(--accent-blue); }
 
-        .btn-spend {
-            background-color: var(--danger-bg);
-            border-color: var(--danger-border);
-            color: var(--danger-text);
-            margin-bottom: 8px;
-        }
-
-        .btn-vault {
-            background-color: var(--accent-bg);
-            border-color: var(--accent-border);
-            color: var(--accent-text);
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- TOP DASHBOARD -->
-        <div class="dashboard">
-            <div class="stat-card">
-                <span class="stat-label">Available Tokens</span>
-                <span class="stat-value token-val" id="token-display">0.00</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Wardrobe Vault</span>
-                <span class="stat-value vault-val" id="vault-display">$0.00</span>
+        <!-- HEADER -->
+        <div class="header">
+            <h1>GOOBA TRACKER</h1>
+            <p id="current-date">DATE LOADING...</p>
+        </div>
+
+        <!-- DASHBOARD CARD -->
+        <div class="card">
+            <div class="dashboard-grid">
+                <div class="stat-box streak-box">
+                    <span class="stat-label">BASELINE STREAK</span>
+                    <span class="stat-value val-streak"><span id="streak-display">0</span> DAYS</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">TOKENS</span>
+                    <span class="stat-value val-token" id="token-display">0.00</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">VAULT</span>
+                    <span class="stat-value val-vault" id="vault-display">$0.00</span>
+                </div>
             </div>
         </div>
 
-        <!-- DAILY NON-NEGOTIABLES (1.25 BASELINE) -->
-        <div class="section">
-            <h2>Daily Non-Negotiables</h2>
-            <ul class="task-list">
-                <label class="task-item">
-                    <div class="task-label"><input type="checkbox" id="chk-medsDay" onchange="toggleHabit('medsDay', 0.25)"> 💊 Meds (Day)</div>
-                    <span class="payout">+0.25</span>
-                </label>
-                <label class="task-item">
-                    <div class="task-label"><input type="checkbox" id="chk-shake" onchange="toggleHabit('shake', 0.50)"> 🥤 Gooba Shake</div>
-                    <span class="payout">+0.50</span>
-                </label>
-                <label class="task-item">
-                    <div class="task-label"><input type="checkbox" id="chk-reset" onchange="toggleHabit('reset', 0.25)"> 🧹 3-Min Reset</div>
-                    <span class="payout">+0.25</span>
-                </label>
-                <label class="task-item">
-                    <div class="task-label"><input type="checkbox" id="chk-medsNight" onchange="toggleHabit('medsNight', 0.25)"> 💊 Meds (Night)</div>
-                    <span class="payout">+0.25</span>
-                </label>
-            </ul>
+        <!-- BASELINE CARD -->
+        <div class="card">
+            <div class="stat-label" style="margin-bottom: 4px;">DAILY ROUTINE (1.25)</div>
+            <div class="task-list">
+                <div class="task-item" onclick="toggleHabit('medsDay', 0.25)">
+                    <div class="task-icon">MD</div>
+                    <div class="task-details">
+                        <div class="task-title">MEDS (DAY)</div>
+                        <div class="task-subtitle">+0.25 TOKENS</div>
+                    </div>
+                    <div class="task-check" id="chk-medsDay"></div>
+                </div>
+                
+                <div class="task-item" onclick="toggleHabit('shake', 0.50)">
+                    <div class="task-icon">SH</div>
+                    <div class="task-details">
+                        <div class="task-title">GOOBA SHAKE</div>
+                        <div class="task-subtitle">+0.50 TOKENS</div>
+                    </div>
+                    <div class="task-check" id="chk-shake"></div>
+                </div>
+
+                <div class="task-item" onclick="toggleHabit('reset', 0.25)">
+                    <div class="task-icon">RE</div>
+                    <div class="task-details">
+                        <div class="task-title">3-MIN RESET</div>
+                        <div class="task-subtitle">+0.25 TOKENS</div>
+                    </div>
+                    <div class="task-check" id="chk-reset"></div>
+                </div>
+
+                <div class="task-item" onclick="toggleHabit('medsNight', 0.25)">
+                    <div class="task-icon">MN</div>
+                    <div class="task-details">
+                        <div class="task-title">MEDS (NIGHT)</div>
+                        <div class="task-subtitle">+0.25 TOKENS</div>
+                    </div>
+                    <div class="task-check" id="chk-medsNight"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- FLEXIBLE ENGINE -->
-        <div class="section">
-            <h2>Flexible Engine</h2>
-            <ul class="task-list">
-                <label class="task-item">
-                    <div class="task-label"><input type="checkbox" id="chk-gym" onchange="toggleHabit('gym', 1.00)"> 🏋️ Gym / Lift</div>
-                    <span class="payout">+1.00</span>
-                </label>
-            </ul>
+        <!-- FLEXIBLE ENGINE CARD -->
+        <div class="card">
+            <div class="stat-label" style="margin-bottom: 4px;">FLEXIBLE ENGINE</div>
+            <div class="task-list">
+                <div class="task-item" onclick="toggleGym()">
+                    <div class="task-icon">GY</div>
+                    <div class="task-details">
+                        <div class="task-title">LIFT SESSION</div>
+                        <div class="task-subtitle">+1.00 TOKENS</div>
+                    </div>
+                    <div class="task-check" id="chk-gym"></div>
+                </div>
+            </div>
 
-            <!-- STUDY BLOCK STEPPER (ADD / UNDO) -->
-            <div class="study-stepper-card">
-                <div class="study-header">
-                    <span class="study-title">💻 Study Hours: <strong id="study-count" style="color: var(--tag-text);">0</strong> hrs</span>
-                    <span class="payout" id="study-payout">+0.00 🪙</span>
+            <div style="margin-top: 8px;">
+                <div class="task-details" style="margin-left: 0; margin-bottom: 12px;">
+                    <div class="task-title">STUDY LOG</div>
+                    <div class="task-subtitle" id="study-payout">+0.00 TOKENS</div>
                 </div>
                 <div class="study-controls">
-                    <button class="btn btn-stepper btn-study-sub" onclick="adjustStudy(-1)">
-                        <span>➖ Undo 1h</span>
-                    </button>
-                    <button class="btn btn-stepper btn-study-add" onclick="adjustStudy(1)">
-                        <span>➕ Log 1h (+1.50)</span>
-                    </button>
+                    <button class="study-btn" onclick="adjustStudy(-1)">-</button>
+                    <div class="study-display"><span id="study-count">0</span> HRS</div>
+                    <button class="study-btn" onclick="adjustStudy(1)">+</button>
                 </div>
             </div>
         </div>
 
-        <!-- SPEND MENU -->
-        <div class="section">
-            <h2>Spend & Redeem</h2>
-            <button class="btn btn-spend" onclick="spendDowntime()">
-                <span>🛋️ 1 hr Downtime</span>
-                <span class="payout" style="color: inherit;">-1.00 🪙</span>
+        <!-- SPEND CARD -->
+        <div class="card">
+            <div class="stat-label" style="margin-bottom: 4px;">SPEND & REDEEM</div>
+            
+            <div class="btn-row">
+                <button class="btn btn-half" style="color: var(--accent-red);" onclick="spendTokens(0.50, '30M DOWNTIME')">30M (-0.50)</button>
+                <button class="btn btn-half" style="color: var(--accent-red);" onclick="spendTokens(1.00, '1H DOWNTIME')">1HR (-1.00)</button>
+            </div>
+            
+            <button class="btn btn-green" style="margin-bottom: 12px;" onclick="bankToVault()">
+                <span>BANK TO VAULT</span>
+                <span style="font-size: 20px;">-1.00 ➔ $2.5</span>
             </button>
-            <button class="btn btn-vault" onclick="bankToVault()">
-                <span>💵 Bank to Vault</span>
-                <span class="payout" style="color: inherit;">-1.00 ➔ $2.50</span>
+            
+            <button class="btn" style="justify-content: center;" onclick="spendVaultCash()">
+                SPEND VAULT CASH
             </button>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="settings-row">
+            <div class="data-text" onclick="exportData()">EXPORT SAVE</div>
+            <div class="data-text" onclick="document.getElementById('import-file').click()">IMPORT SAVE</div>
+            <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
+        </div>
+    </div>
+
+    <!-- CUSTOM OVERLAY POP-UPS -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        <div id="alert-box" class="modal-box" style="display: none;">
+            <div id="alert-msg" class="modal-msg"></div>
+            <button class="btn btn-green" style="justify-content: center;" onclick="closeAlert()">OK</button>
+        </div>
+        
+        <div id="prompt-box" class="modal-box" style="display: none;">
+            <div id="prompt-msg" class="modal-msg"></div>
+            <input type="number" id="prompt-input" class="modal-input" placeholder="0.00" step="0.01">
+            <div class="btn-row" style="margin-bottom: 0;">
+                <button class="btn btn-half" style="justify-content: center;" onclick="closePrompt(false)">CANCEL</button>
+                <button class="btn btn-half btn-green" style="justify-content: center;" onclick="closePrompt(true)">CONFIRM</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Data Structure & Storage
-        let state = JSON.parse(localStorage.getItem('tokenApp')) || {
+        // 8-BIT AUDIO SYNTHESIZER
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playDing() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High pitch
+            osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime); // Low volume
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function playBloop() {
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(300, audioCtx.currentTime); // Low pitch
+            osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
+        // Haptic Feedback
+        function triggerHaptic() {
+            if (navigator.vibrate) navigator.vibrate(40); 
+        }
+
+        // Set Date
+        const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
+
+        // Future-Proofing State Template
+        const DEFAULT_STATE = {
+            version: 1.0,
             tokens: 0.00,
             vaultCash: 0.00,
+            streak: 0,
+            baselineMet: false,
             lastDate: new Date().toLocaleDateString(),
             studyBlocks: 0,
             habits: { medsDay: false, shake: false, reset: false, medsNight: false, gym: false }
         };
 
-        // Midnight Reset Logic (Checks local date)
+        // Load and Merge State
+        let loadedState = JSON.parse(localStorage.getItem('tokenApp'));
+        let state = { ...DEFAULT_STATE };
+        if (loadedState) {
+            state = { 
+                ...DEFAULT_STATE, 
+                ...loadedState, 
+                habits: { ...DEFAULT_STATE.habits, ...(loadedState.habits || {}) } 
+            };
+        }
+
+        // Midnight Reset
         const today = new Date().toLocaleDateString();
         if (state.lastDate !== today) {
+            let yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (state.lastDate === yesterday.toLocaleDateString() && state.baselineMet) {
+                state.streak += 1;
+            } else {
+                state.streak = 0; 
+            }
+
             state.habits = { medsDay: false, shake: false, reset: false, medsNight: false, gym: false };
-            state.studyBlocks = 0; // Resets daily study session counter for the new day
+            state.studyBlocks = 0;
+            state.baselineMet = false;
             state.lastDate = today;
             saveState();
         }
 
-        // Render UI
+        // Custom Modal UI Logic
+        let promptCallback = null;
+
+        function customAlert(msg) {
+            triggerHaptic();
+            playBloop();
+            document.getElementById('alert-msg').innerText = msg;
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.getElementById('alert-box').style.display = 'flex';
+            document.getElementById('prompt-box').style.display = 'none';
+        }
+
+        function closeAlert() {
+            triggerHaptic();
+            document.getElementById('modal-overlay').style.display = 'none';
+        }
+
+        function customPrompt(msg, callback) {
+            triggerHaptic();
+            promptCallback = callback;
+            document.getElementById('prompt-msg').innerText = msg;
+            document.getElementById('prompt-input').value = '';
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.getElementById('alert-box').style.display = 'none';
+            document.getElementById('prompt-box').style.display = 'flex';
+            document.getElementById('prompt-input').focus();
+        }
+
+        function closePrompt(isConfirm) {
+            triggerHaptic();
+            document.getElementById('modal-overlay').style.display = 'none';
+            if (isConfirm && promptCallback) {
+                promptCallback(document.getElementById('prompt-input').value);
+            }
+            promptCallback = null;
+        }
+
+        // Update UI Custom Checkboxes
+        function renderCheck(id, isChecked) {
+            const el = document.getElementById(id);
+            if (isChecked) {
+                el.classList.add('checked');
+                el.innerText = '✓';
+            } else {
+                el.classList.remove('checked');
+                el.innerText = '';
+            }
+        }
+
         function updateUI() {
             document.getElementById('token-display').innerText = Math.max(0, state.tokens).toFixed(2);
             document.getElementById('vault-display').innerText = "$" + state.vaultCash.toFixed(2);
+            document.getElementById('streak-display').innerText = state.streak;
             
-            // Checkboxes
-            document.getElementById('chk-medsDay').checked = state.habits.medsDay || false;
-            document.getElementById('chk-shake').checked = state.habits.shake || false;
-            document.getElementById('chk-reset').checked = state.habits.reset || false;
-            document.getElementById('chk-medsNight').checked = state.habits.medsNight || false;
-            document.getElementById('chk-gym').checked = state.habits.gym || false;
+            renderCheck('chk-medsDay', state.habits.medsDay);
+            renderCheck('chk-shake', state.habits.shake);
+            renderCheck('chk-reset', state.habits.reset);
+            renderCheck('chk-medsNight', state.habits.medsNight);
+            renderCheck('chk-gym', state.habits.gym);
 
-            // Study Counter
             const studyHours = state.studyBlocks || 0;
             document.getElementById('study-count').innerText = studyHours;
-            document.getElementById('study-payout').innerText = "+" + (studyHours * 1.50).toFixed(2) + " 🪙";
+            document.getElementById('study-payout').innerText = "+" + (studyHours * 1.50).toFixed(2) + " TOKENS";
         }
 
         function saveState() {
@@ -373,57 +604,140 @@
             updateUI();
         }
 
-        // Habit Toggle Logic
-        function toggleHabit(habitKey, value) {
-            const isChecked = document.getElementById(`chk-${habitKey}`).checked;
-            state.habits[habitKey] = isChecked;
+        // Baseline Logic
+        function toggleHabit(key, value) {
+            triggerHaptic();
+            state.habits[key] = !state.habits[key];
+            const isChecked = state.habits[key];
             
-            if (isChecked) {
-                state.tokens += value;
+            if (isChecked) playDing(); else playBloop();
+            
+            state.tokens = isChecked ? state.tokens + value : Math.max(0, state.tokens - value);
+            
+            if (state.habits.medsDay && state.habits.shake && state.habits.reset && state.habits.medsNight) {
+                state.baselineMet = true;
             } else {
-                state.tokens = Math.max(0, state.tokens - value);
+                state.baselineMet = false;
             }
             saveState();
         }
 
-        // Study Stepper with Undo
-        function adjustStudy(delta) {
-            if (delta > 0) {
-                state.studyBlocks = (state.studyBlocks || 0) + 1;
-                state.tokens += 1.50;
-                saveState();
-            } else if (delta < 0) {
-                if ((state.studyBlocks || 0) > 0) {
-                    state.studyBlocks -= 1;
-                    state.tokens = Math.max(0, state.tokens - 1.50);
-                    saveState();
-                } else {
-                    alert("No study hours logged today to undo.");
-                }
-            }
+        // Gym Logic
+        function toggleGym() {
+            triggerHaptic();
+            state.habits.gym = !state.habits.gym;
+            const isChecked = state.habits.gym;
+            
+            if (isChecked) playDing(); else playBloop();
+
+            state.tokens = isChecked ? state.tokens + 1.00 : Math.max(0, state.tokens - 1.00);
+            saveState();
         }
 
-        // Spend Actions
-        function spendDowntime() {
-            if (state.tokens >= 1.00) {
-                state.tokens -= 1.00;
+        // Study Logic
+        function adjustStudy(delta) {
+            triggerHaptic();
+            if (delta > 0) {
+                playDing();
+                state.studyBlocks++;
+                state.tokens += 1.50;
+            } else if (delta < 0 && state.studyBlocks > 0) {
+                playBloop();
+                state.studyBlocks--;
+                state.tokens = Math.max(0, state.tokens - 1.50);
+            }
+            saveState();
+        }
+
+        // Spend Tokens
+        function spendTokens(cost, name) {
+            triggerHaptic();
+            if (state.tokens >= cost) {
+                playBloop();
+                state.tokens -= cost;
                 saveState();
             } else {
-                alert("Not enough tokens! Complete daily habits or study first.");
+                customAlert(`NOT ENOUGH TOKENS FOR ${name}!`);
             }
         }
 
         function bankToVault() {
+            triggerHaptic();
             if (state.tokens >= 1.00) {
+                playDing();
                 state.tokens -= 1.00;
                 state.vaultCash += 2.50;
                 saveState();
             } else {
-                alert("Not enough tokens to convert to vault cash!");
+                customAlert("NOT ENOUGH TOKENS TO BANK!");
             }
         }
 
-        // Initial Load
+        // Spend Real Cash
+        function spendVaultCash() {
+            triggerHaptic();
+            if (state.vaultCash <= 0) {
+                customAlert("VAULT IS EMPTY!");
+                return;
+            }
+            
+            customPrompt(`HOW MUCH DID YOU SPEND?\n(MAX: $${state.vaultCash.toFixed(2)})`, function(amountStr) {
+                if (!amountStr) return;
+                let amount = parseFloat(amountStr);
+                if (isNaN(amount) || amount <= 0) {
+                    customAlert("INVALID AMOUNT."); 
+                    return;
+                }
+                if (amount > state.vaultCash) {
+                    customAlert("NOT ENOUGH VAULT CASH!"); 
+                    return;
+                }
+                playBloop();
+                state.vaultCash -= amount;
+                saveState();
+            });
+        }
+
+        // Data Management
+        function exportData() {
+            triggerHaptic();
+            playDing();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+            const dlNode = document.createElement('a');
+            dlNode.setAttribute("href", dataStr);
+            dlNode.setAttribute("download", `gooba_tracker_backup_${today.replace(/\//g, '-')}.json`);
+            document.body.appendChild(dlNode); 
+            dlNode.click();
+            dlNode.remove();
+        }
+
+        function importData(event) {
+            triggerHaptic();
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.tokens !== undefined) {
+                        state = { 
+                            ...DEFAULT_STATE, 
+                            ...imported, 
+                            habits: { ...DEFAULT_STATE.habits, ...(imported.habits || {}) } 
+                        };
+                        saveState();
+                        playDing();
+                        customAlert("DATA RESTORED SUCCESSFULLY!");
+                    } else {
+                        customAlert("INVALID BACKUP FILE.");
+                    }
+                } catch (err) { 
+                    customAlert("ERROR READING FILE."); 
+                }
+            };
+            reader.readAsText(file);
+        }
+
         updateUI();
     </script>
 </body>
