@@ -141,7 +141,7 @@
         .log-label { font-size: 13px; color: var(--text-muted); }
         .log-val { font-size: 20px; margin-top: 2px; color: #fff; }
 
-        /* Timer Widgets */
+        /* Unified Active Session Widget */
         .timer-banner {
             background-color: #1a1a1a;
             border: 2px dashed #666;
@@ -326,25 +326,14 @@
                 </div>
             </div>
 
-            <!-- LIVE DOWNTIME TIMER WIDGET (HIDDEN UNTIL ACTIVE) -->
-            <div id="timer-card-wrapper" style="display: none;">
-                <div class="timer-banner">
+            <!-- UNIFIED ACTIVE SESSION WIDGET (SHOWS EITHER DOWNTIME OR FOCUS) -->
+            <div id="active-session-wrapper" style="display: none;">
+                <div class="timer-banner" id="session-banner-style">
                     <div>
-                        <span class="stat-label" style="display:block; font-size:12px;">⏳ DOWNTIME BREAK ACTIVE</span>
-                        <span class="timer-display" id="timer-countdown">30:00</span>
+                        <span class="stat-label" id="session-title" style="display:block; font-size:12px;">⏳ ACTIVE SESSION</span>
+                        <span class="timer-display" id="session-countdown">00:00</span>
                     </div>
-                    <button class="btn btn-red" style="padding: 8px 14px; font-size:16px; margin-bottom:0;" onclick="cancelDowntimeTimer()">STOP</button>
-                </div>
-            </div>
-
-            <!-- LIVE FOCUS POMODORO WIDGET (HIDDEN UNTIL ACTIVE) -->
-            <div id="focus-card-wrapper" style="display: none;">
-                <div class="timer-banner" style="border-color: #fff;">
-                    <div>
-                        <span class="stat-label" style="display:block; font-size:12px; color:#fff;">🍅 FOCUS SESSION (DO NOT LEAVE)</span>
-                        <span class="timer-display" id="focus-countdown">25:00</span>
-                    </div>
-                    <button class="btn btn-red" style="padding: 8px 14px; font-size:16px; margin-bottom:0;" onclick="abortFocusSession()">ABORT</button>
+                    <button class="btn btn-red" style="padding: 8px 14px; font-size:16px; margin-bottom:0;" onclick="cancelActiveSession()">STOP</button>
                 </div>
             </div>
 
@@ -388,7 +377,7 @@
                 </div>
                 
                 <div class="btn-row" style="margin-bottom: 8px;">
-                    <button class="btn btn-half" style="font-size:18px; padding:10px;" onclick="startFocusPomodoro(25)">25M FOCUS (+0.62)</button>
+                    <button class="btn btn-half" style="font-size:18px; padding:10px;" onclick="startFocusPomodoro(25)">25M FOCUS (+0.63)</button>
                     <button class="btn btn-half" style="font-size:18px; padding:10px;" onclick="startFocusPomodoro(50)">50M FOCUS (+1.25)</button>
                 </div>
 
@@ -582,7 +571,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 3.6,
+            version: 3.7,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -628,8 +617,7 @@
         let pendingSpendCost = 0;
         let pendingSpendMins = 0;
         let pendingSpendName = "";
-        let countdownInterval = null;
-        let focusInterval = null;
+        let masterInterval = null;
 
         function toggleSound() {
             triggerHaptic();
@@ -780,6 +768,10 @@
         // Downtime Timer Flow
         function promptSpendTokens(cost, minutes, name) {
             triggerHaptic();
+            if (state.focusEndTime) {
+                customAlert("CANNOT REDEEM DOWNTIME DURING ACTIVE FOCUS SESSION!");
+                return;
+            }
             if (state.tokens < cost) {
                 customAlert(`NOT ENOUGH TOKENS FOR ${name}!`);
                 return;
@@ -802,9 +794,10 @@
 
             if (startTimer) {
                 requestNotificationPermission();
+                state.focusEndTime = null; // Ensure mutual exclusivity
                 const now = Date.now();
                 state.timerEndTime = now + (pendingSpendMins * 60 * 1000);
-                startCountdownEngine();
+                startMasterEngine();
                 sendWebhook("DOWNTIME REDEEMED", `🛋️ Spent **${pendingSpendCost.toFixed(2)} tokens** on ${pendingSpendName} | **${pendingSpendMins}m Timer Started** ⏱️`);
             } else {
                 sendWebhook("DOWNTIME REDEEMED", `🛋️ Spent **${pendingSpendCost.toFixed(2)} tokens** on ${pendingSpendName}`);
@@ -812,50 +805,21 @@
             saveState();
         }
 
-        function cancelDowntimeTimer() {
+        function cancelActiveSession() {
             triggerHaptic();
             state.timerEndTime = null;
-            if (countdownInterval) clearInterval(countdownInterval);
+            state.focusEndTime = null;
             saveState();
-            document.getElementById('timer-card-wrapper').style.display = 'none';
-        }
-
-        function startCountdownEngine() {
-            if (countdownInterval) clearInterval(countdownInterval);
-            document.getElementById('timer-card-wrapper').style.display = 'block';
-
-            countdownInterval = setInterval(() => {
-                if (!state.timerEndTime) {
-                    clearInterval(countdownInterval);
-                    document.getElementById('timer-card-wrapper').style.display = 'none';
-                    return;
-                }
-
-                const remaining = state.timerEndTime - Date.now();
-                if (remaining <= 0) {
-                    clearInterval(countdownInterval);
-                    state.timerEndTime = null;
-                    saveState();
-                    document.getElementById('timer-card-wrapper').style.display = 'none';
-                    
-                    playAlarmBeeps();
-                    triggerHaptic();
-                    fireNativeNotification("🚨 TORO TRACKER // DOWNTIME ENDED", "Downtime session has expired! Time to get back to work! ⚡");
-                    sendWebhook("DOWNTIME ENDED", "🚨 **Downtime session has expired!** Time to get back to work! ⚡");
-                    customAlert("🚨 DOWNTIME BREAK OVER! GET BACK TO WORK!");
-                } else {
-                    const totalSecs = Math.floor(remaining / 1000);
-                    const mins = Math.floor(totalSecs / 60);
-                    const secs = totalSecs % 60;
-                    document.getElementById('timer-countdown').innerText = 
-                        String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
-                }
-            }, 1000);
+            document.getElementById('active-session-wrapper').style.display = 'none';
         }
 
         // Focus Pomodoro Flow
         function startFocusPomodoro(minutes) {
             triggerHaptic();
+            if (state.timerEndTime) {
+                customAlert("CANNOT START FOCUS DURING ACTIVE DOWNTIME BREAK!");
+                return;
+            }
             if (state.focusEndTime) {
                 customAlert("FOCUS SESSION ALREADY IN PROGRESS!");
                 return;
@@ -864,57 +828,82 @@
             state.focusEndTime = Date.now() + (minutes * 60 * 1000);
             state.focusMinutesTotal = minutes;
             saveState();
-            runFocusEngine();
+            startMasterEngine();
             sendWebhook("FOCUS STARTED", `🍅 **${minutes}M Focus Session** started! No leaving the app! 🛡️`);
         }
 
-        function abortFocusSession() {
-            triggerHaptic();
-            state.focusEndTime = null;
-            if (focusInterval) clearInterval(focusInterval);
-            saveState();
-            document.getElementById('focus-card-wrapper').style.display = 'none';
-            customAlert("FOCUS SESSION ABORTED. NO TOKENS EARNED.");
-            sendWebhook("FOCUS ABORTED", "❌ Focus session was cancelled early.");
-        }
+        // Unified Master Engine for Timers
+        function startMasterEngine() {
+            if (masterInterval) clearInterval(masterInterval);
+            document.getElementById('active-session-wrapper').style.display = 'block';
 
-        function runFocusEngine() {
-            if (focusInterval) clearInterval(focusInterval);
-            document.getElementById('focus-card-wrapper').style.display = 'block';
+            masterInterval = setInterval(() => {
+                const now = Date.now();
 
-            focusInterval = setInterval(() => {
-                if (!state.focusEndTime) {
-                    clearInterval(focusInterval);
-                    document.getElementById('focus-card-wrapper').style.display = 'none';
+                // Check Downtime Timer
+                if (state.timerEndTime) {
+                    const remaining = state.timerEndTime - now;
+                    document.getElementById('session-title').innerText = "⏳ DOWNTIME BREAK ACTIVE";
+                    document.getElementById('session-banner-style').style.borderColor = "#666";
+
+                    if (remaining <= 0) {
+                        state.timerEndTime = null;
+                        saveState();
+                        document.getElementById('active-session-wrapper').style.display = 'none';
+                        clearInterval(masterInterval);
+                        
+                        playAlarmBeeps();
+                        triggerHaptic();
+                        fireNativeNotification("🚨 TORO TRACKER // DOWNTIME ENDED", "Downtime session has expired! Time to get back to work! ⚡");
+                        sendWebhook("DOWNTIME ENDED", "🚨 **Downtime session has expired!** Time to get back to work! ⚡");
+                        customAlert("🚨 DOWNTIME BREAK OVER! GET BACK TO WORK!");
+                    } else {
+                        const totalSecs = Math.floor(remaining / 1000);
+                        const mins = Math.floor(totalSecs / 60);
+                        const secs = totalSecs % 60;
+                        document.getElementById('session-countdown').innerText = 
+                            String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                    }
                     return;
                 }
 
-                const remaining = state.focusEndTime - Date.now();
-                if (remaining <= 0) {
-                    clearInterval(focusInterval);
-                    const mins = state.focusMinutesTotal;
-                    state.focusEndTime = null;
-                    
-                    // Reward calculation: 1 hr = 1.50 tokens -> proportional to minutes
-                    const earnedTokens = Math.round((mins / 60) * 1.50 * 100) / 100;
-                    state.studyBlocks += (mins / 60);
-                    state.tokens += earnedTokens;
-                    state.todayLog.earned += earnedTokens;
-                    saveState();
+                // Check Focus Pomodoro Timer
+                if (state.focusEndTime) {
+                    const remaining = state.focusEndTime - now;
+                    document.getElementById('session-title').innerText = "🍅 FOCUS SESSION (DO NOT LEAVE)";
+                    document.getElementById('session-banner-style').style.borderColor = "#fff";
 
-                    document.getElementById('focus-card-wrapper').style.display = 'none';
-                    playAlarmBeeps();
-                    triggerHaptic();
-                    fireNativeNotification("🍅 TORO TRACKER // FOCUS COMPLETED", `Great job! Earned +${earnedTokens.toFixed(2)} tokens!`);
-                    sendWebhook("FOCUS COMPLETED", `🍅 **${mins}M Focus Session completed!** Earned **+${earnedTokens.toFixed(2)} tokens** 🎉`);
-                    customAlert(`🍅 FOCUS COMPLETE! +${earnedTokens.toFixed(2)} TOKENS EARNED!`);
-                } else {
-                    const totalSecs = Math.floor(remaining / 1000);
-                    const mins = Math.floor(totalSecs / 60);
-                    const secs = totalSecs % 60;
-                    document.getElementById('focus-countdown').innerText = 
-                        String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                    if (remaining <= 0) {
+                        const mins = state.focusMinutesTotal;
+                        state.focusEndTime = null;
+                        
+                        const earnedTokens = Math.round((mins / 60) * 1.50 * 100) / 100;
+                        state.studyBlocks += (mins / 60);
+                        state.tokens += earnedTokens;
+                        state.todayLog.earned += earnedTokens;
+                        saveState();
+
+                        document.getElementById('active-session-wrapper').style.display = 'none';
+                        clearInterval(masterInterval);
+
+                        playAlarmBeeps();
+                        triggerHaptic();
+                        fireNativeNotification("🍅 TORO TRACKER // FOCUS COMPLETED", `Great job! Earned +${earnedTokens.toFixed(2)} tokens!`);
+                        sendWebhook("FOCUS COMPLETED", `🍅 **${mins}M Focus Session completed!** Earned **+${earnedTokens.toFixed(2)} tokens** 🎉`);
+                        customAlert(`🍅 FOCUS COMPLETE! +${earnedTokens.toFixed(2)} TOKENS EARNED!`);
+                    } else {
+                        const totalSecs = Math.floor(remaining / 1000);
+                        const mins = Math.floor(totalSecs / 60);
+                        const secs = totalSecs % 60;
+                        document.getElementById('session-countdown').innerText = 
+                            String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                    }
+                    return;
                 }
+
+                // If neither is running, hide widget
+                document.getElementById('active-session-wrapper').style.display = 'none';
+                clearInterval(masterInterval);
             }, 1000);
         }
 
@@ -922,9 +911,9 @@
         document.addEventListener("visibilitychange", () => {
             if (document.hidden && state.focusEndTime) {
                 state.focusEndTime = null;
-                if (focusInterval) clearInterval(focusInterval);
+                if (masterInterval) clearInterval(masterInterval);
                 saveState();
-                document.getElementById('focus-card-wrapper').style.display = 'none';
+                document.getElementById('active-session-wrapper').style.display = 'none';
                 sendWebhook("FOCUS FAILED", "🚨 **Focus session cancelled!** User left the app/tab.");
             }
         });
@@ -1197,11 +1186,8 @@
         }
 
         updateUI();
-        if (state.timerEndTime && state.timerEndTime > Date.now()) {
-            startCountdownEngine();
-        }
-        if (state.focusEndTime && state.focusEndTime > Date.now()) {
-            runFocusEngine();
+        if ((state.timerEndTime && state.timerEndTime > Date.now()) || (state.focusEndTime && state.focusEndTime > Date.now())) {
+            startMasterEngine();
         }
     </script>
 </body>
