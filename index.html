@@ -18,54 +18,61 @@
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-main: #ffffff;
-            --bg-card: #000000;
-            --bg-subcard: #141414;
-            --bg-icon: #ffffff;
-            --bg-check-off: #222222;
-            --bg-check-on: #ffffff;
-            --text-dark: #000000;
-            --text-light: #ffffff;
-            --text-muted: #888888;
             --radius-card: 16px;
             --radius-btn: 10px;
         }
 
-        /* CAPPUCCINO THEME VARIANTS */
-        body.theme-cappuccino {
-            --bg-main: #F4EBE1;
-            --bg-card: #3E2723;
-            --bg-subcard: #4E342E;
-            --bg-icon: #D7CCC8;
-            --bg-check-off: #2C1810;
-            --bg-check-on: #D7CCC8;
-            --text-dark: #2C1810;
-            --text-light: #EFEBE9;
-            --text-muted: #BCAAA4;
-        }
-
+        /* CATPPUCCIN THEME PALETTES */
         body.theme-latte {
-            --bg-main: #FFF8E1;
-            --bg-card: #795548;
-            --bg-subcard: #8D6E63;
-            --bg-icon: #FFE0B2;
-            --bg-check-off: #4E342E;
-            --bg-check-on: #FFE0B2;
-            --text-dark: #3E2723;
-            --text-light: #FFF3E0;
-            --text-muted: #D7CCC8;
+            --bg-main: #EFF1F5;
+            --bg-card: #CCD0DA;
+            --bg-subcard: #BCC0CC;
+            --bg-icon: #4C4F69;
+            --bg-check-off: #CCD0DA;
+            --bg-check-on: #4C4F69;
+            --text-dark: #4C4F69;
+            --text-light: #4C4F69;
+            --text-muted: #6C6F85;
+            --accent: #EA76CB;
         }
 
-        body.theme-espresso {
-            --bg-main: #120E0C;
-            --bg-card: #1E1512;
-            --bg-subcard: #2B1D18;
-            --bg-icon: #D7CCC8;
-            --bg-check-off: #0A0706;
-            --bg-check-on: #D7CCC8;
-            --text-dark: #F4EBE1;
-            --text-light: #F4EBE1;
-            --text-muted: #8D6E63;
+        body.theme-frappe {
+            --bg-main: #232634;
+            --bg-card: #292C3C;
+            --bg-subcard: #303446;
+            --bg-icon: #CA9EE6;
+            --bg-check-off: #414559;
+            --bg-check-on: #CA9EE6;
+            --text-dark: #C6D0F5;
+            --text-light: #C6D0F5;
+            --text-muted: #A5ADCE;
+            --accent: #F4B8E4;
+        }
+
+        body.theme-macchiato {
+            --bg-main: #181926;
+            --bg-card: #1E1E2E;
+            --bg-subcard: #24273A;
+            --bg-icon: #C6A0F6;
+            --bg-check-off: #363A4F;
+            --bg-check-on: #C6A0F6;
+            --text-dark: #CAD3F5;
+            --text-light: #CAD3F5;
+            --text-muted: #A5B4FC;
+            --accent: #F5BDE6;
+        }
+
+        body.theme-mocha {
+            --bg-main: #11111B;
+            --bg-card: #1E1E2E;
+            --bg-subcard: #313244;
+            --bg-icon: #CBA6F7;
+            --bg-check-off: #45475A;
+            --bg-check-on: #CBA6F7;
+            --text-dark: #CDD6F4;
+            --text-light: #CDD6F4;
+            --text-muted: #A6ADC8;
+            --accent: #F5C2E7;
         }
 
         * {
@@ -85,7 +92,7 @@
             justify-content: center;
             min-height: 100vh;
             padding: 24px 16px calc(40px + env(safe-area-inset-bottom)) 16px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -96,7 +103,7 @@
             gap: 16px;
         }
 
-        /* Top Header & Companion Box */
+        /* Top Header & Pixel Cat Companion */
         .header {
             display: flex;
             justify-content: space-between;
@@ -114,32 +121,54 @@
 
         .header-left p {
             font-size: 18px;
-            opacity: 0.7;
+            opacity: 0.8;
             margin-top: 4px;
             letter-spacing: 1px;
         }
 
-        /* Animated Pixel Toro Companion */
         .companion-box {
             background-color: var(--bg-card);
             border: 2px solid currentColor;
             border-radius: var(--radius-btn);
-            padding: 8px 12px;
+            padding: 6px 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             color: var(--text-light);
             box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
         }
 
+        /* Pure CSS Pixel Cat Face Animation */
         @keyframes catBreathe {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-2px); }
         }
 
-        .companion-icon {
-            font-size: 28px;
+        .pixel-cat {
+            width: 24px;
+            height: 24px;
+            position: relative;
             animation: catBreathe 2s ease-in-out infinite;
+        }
+
+        .pixel-cat .ear-l, .pixel-cat .ear-r {
+            position: absolute; width: 4px; height: 4px; background: currentColor; top: 0;
+        }
+        .pixel-cat .ear-l { left: 2px; }
+        .pixel-cat .ear-r { right: 2px; }
+
+        .pixel-cat .face-base {
+            position: absolute; width: 16px; height: 12px; background: currentColor; top: 4px; left: 4px; border-radius: 2px;
+        }
+
+        .pixel-cat .eye-l, .pixel-cat .eye-r {
+            position: absolute; width: 2px; height: 2px; background: var(--bg-card); top: 7px;
+        }
+        .pixel-cat .eye-l { left: 6px; }
+        .pixel-cat .eye-r { right: 6px; }
+
+        .pixel-cat .nose {
+            position: absolute; width: 2px; height: 1px; background: var(--accent); top: 10px; left: 11px;
         }
 
         .companion-text {
@@ -147,8 +176,8 @@
             flex-direction: column;
         }
 
-        .companion-name { font-size: 16px; color: var(--text-muted); letter-spacing: 1px; }
-        .companion-status { font-size: 18px; color: #fff; letter-spacing: 1px; }
+        .companion-name { font-size: 14px; color: var(--text-muted); letter-spacing: 1px; }
+        .companion-status { font-size: 16px; color: var(--text-light); letter-spacing: 1px; }
 
         /* Cards */
         .card {
@@ -199,27 +228,27 @@
             letter-spacing: 1px;
         }
         
-        .val-token { color: #fff; }
-        .val-vault { color: #fff; text-decoration: underline; }
-        .val-streak { color: #fff; font-size: 24px; }
+        .val-token { color: var(--text-light); }
+        .val-vault { color: var(--text-light); text-decoration: underline; }
+        .val-streak { color: var(--text-light); font-size: 24px; }
 
         .daily-log-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; text-align: center; }
         .log-box { background-color: var(--bg-subcard); border-radius: 8px; padding: 10px 4px; display: flex; flex-direction: column; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
         .log-label { font-size: 13px; color: var(--text-muted); }
-        .log-val { font-size: 20px; margin-top: 2px; color: #fff; }
+        .log-val { font-size: 20px; margin-top: 2px; color: var(--text-light); }
 
         /* Unified Active Session Widget */
         .timer-banner {
-            background-color: #1a1a1a;
-            border: 2px dashed #888;
+            background-color: var(--bg-subcard);
+            border: 2px dashed var(--accent);
             border-radius: var(--radius-btn);
             padding: 10px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: #fff;
+            color: var(--text-light);
         }
-        .timer-display { font-size: 26px; letter-spacing: 2px; color: #fff; }
+        .timer-display { font-size: 26px; letter-spacing: 2px; color: var(--text-light); }
 
         /* Task Items */
         .task-list {
@@ -238,7 +267,7 @@
             width: 40px;
             height: 40px;
             background-color: var(--bg-icon);
-            color: var(--text-dark);
+            color: var(--bg-card);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -259,6 +288,7 @@
         .task-title {
             font-size: 22px;
             letter-spacing: 1px;
+            color: var(--text-light);
         }
 
         .task-subtitle {
@@ -279,12 +309,12 @@
             font-size: 28px;
             color: var(--text-light);
             flex-shrink: 0;
-            border: 2px solid #555;
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
         .task-check.checked {
             background-color: var(--bg-check-on);
-            color: var(--text-dark);
+            color: var(--bg-card);
             border-color: #fff;
         }
 
@@ -303,7 +333,7 @@
             width: 40px;
             height: 40px;
             background-color: var(--bg-icon);
-            color: var(--text-dark);
+            color: var(--bg-card);
             border: 2px solid currentColor;
             border-radius: 8px;
             font-size: 26px;
@@ -313,20 +343,21 @@
             cursor: pointer;
         }
         
-        .study-btn:active { background-color: #ccc; }
+        .study-btn:active { opacity: 0.8; }
 
         .study-display {
             font-size: 24px;
             text-align: center;
             flex-grow: 1;
             letter-spacing: 1px;
+            color: var(--text-light);
         }
 
         /* Buttons */
         .btn {
             background-color: var(--bg-subcard);
             color: var(--text-light);
-            border: 2px solid #555;
+            border: 2px solid rgba(255,255,255,0.2);
             padding: 12px 14px;
             border-radius: var(--radius-btn);
             font-size: 22px;
@@ -338,46 +369,52 @@
             letter-spacing: 1px;
         }
 
-        .btn:active { background-color: #222; }
+        .btn:active { opacity: 0.85; }
         
-        .btn-half { width: calc(50% - 6px); display: inline-flex; justify-content: center; }
-        .btn-row { display: flex; gap: 12px; margin-bottom: 8px; }
+        .btn-half { width: calc(50% - 4px); display: inline-flex; justify-content: center; }
+        .btn-row { display: flex; gap: 8px; margin-bottom: 8px; }
         
-        .btn-green { background-color: #fff; color: #000; border-color: #fff; }
-        .btn-green:active { background-color: #ccc; }
-        .btn-red { background-color: #000; color: #fff; border: 2px dashed #666; }
+        .btn-green { background-color: var(--accent); color: var(--bg-card); border-color: var(--accent); font-weight: bold; }
+        .btn-red { background-color: var(--bg-subcard); color: #ff8a8a; border: 2px dashed #ff8a8a; }
 
-        .rules-box { background-color: var(--bg-subcard); border-radius: var(--radius-btn); padding: 12px; font-size: 16px; display: flex; flex-direction: column; gap: 4px; color: #aaa; border: 1px solid rgba(255,255,255,0.1); }
-        .rules-box span { color: #fff; font-weight: bold; }
+        .rules-box { background-color: var(--bg-subcard); border-radius: var(--radius-btn); padding: 12px; font-size: 16px; display: flex; flex-direction: column; gap: 4px; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
+        .rules-box span { color: var(--text-light); font-weight: bold; }
 
         .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
-        .data-btn { background: var(--bg-card); border: 2px solid #444; color: var(--text-muted); border-radius: var(--radius-btn); font-size: 16px; text-align: center; padding: 12px; cursor: pointer; font-family: 'VT323', monospace; }
-        .data-btn:active { background: #111; }
+        .data-btn { background: var(--bg-subcard); border: 2px solid rgba(255,255,255,0.15); color: var(--text-light); border-radius: var(--radius-btn); font-size: 16px; text-align: center; padding: 12px; cursor: pointer; font-family: 'VT323', monospace; }
+        .data-btn:active { opacity: 0.8; }
 
         /* ANIMATIONS */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; animation: fadeIn 0.1s ease-out; }
-        .modal-box { background-color: var(--bg-card); border-radius: var(--radius-card); padding: 22px; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; box-shadow: 6px 6px 0px rgba(255,255,255,0.2); color: var(--text-light); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid #ffffff; }
-        .modal-msg { font-size: 22px; text-align: center; line-height: 1.2; letter-spacing: 1px; }
-        .modal-input { width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-subcard); border: 2px solid #444; color: #fff; font-size: 22px; text-align: center; outline: none; font-family: 'VT323', monospace; }
-        .modal-input:focus { border-color: #fff; }
-        .modal-list-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-subcard); padding: 8px 10px; border-radius: 8px; font-size: 18px; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; animation: fadeIn 0.1s ease-out; }
+        .modal-box { background-color: var(--bg-card); border-radius: var(--radius-card); padding: 22px; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; box-shadow: 6px 6px 0px rgba(0,0,0,0.5); color: var(--text-light); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid currentColor; }
+        .modal-msg { font-size: 22px; text-align: center; line-height: 1.2; letter-spacing: 1px; color: var(--text-light); }
+        .modal-input { width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-subcard); border: 2px solid rgba(255,255,255,0.2); color: var(--text-light); font-size: 22px; text-align: center; outline: none; font-family: 'VT323', monospace; }
+        .modal-input:focus { border-color: var(--accent); }
+        .modal-list-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-subcard); padding: 8px 10px; border-radius: 8px; font-size: 18px; border: 1px solid rgba(255,255,255,0.1); color: var(--text-light); }
     </style>
 </head>
-<body class="theme-cappuccino">
+<body class="theme-macchiato">
 
     <div class="container">
-        <!-- HEADER WITH COMPANION -->
+        <!-- HEADER WITH PIXEL CAT COMPANION -->
         <div class="header">
             <div class="header-left">
                 <h1>TORO TRACKER</h1>
                 <p id="current-date">DATE LOADING...</p>
             </div>
             <div class="companion-box" id="companion-widget">
-                <div class="companion-icon" id="companion-emoji">🐱</div>
+                <div class="pixel-cat" id="pixel-cat-avatar">
+                    <div class="ear-l"></div>
+                    <div class="ear-r"></div>
+                    <div class="face-base"></div>
+                    <div class="eye-l"></div>
+                    <div class="eye-r"></div>
+                    <div class="nose"></div>
+                </div>
                 <div class="companion-text">
                     <span class="companion-name">TORO</span>
                     <span class="companion-status" id="companion-mood">CHILLING</span>
@@ -496,7 +533,7 @@
 
         <!-- SETTINGS -->
         <div class="settings-grid">
-            <div class="data-btn" onclick="toggleTheme()">🎨 <span id="theme-name">CAPPUCCINO</span></div>
+            <div class="data-btn" onclick="toggleTheme()">🎨 <span id="theme-name">MACCHIATO</span></div>
             <div class="data-btn" onclick="toggleSound()">🔊 SOUND: <span id="sound-status">ON</span></div>
             <div class="data-btn" onclick="openEconomySettings()">⚙️ RATES</div>
             <div class="data-btn" onclick="promptWebhookSetup()">🔗 WEBHOOK</div>
@@ -525,9 +562,9 @@
         <!-- ECONOMY SETTINGS MODAL -->
         <div id="economy-box" class="modal-box" style="display: none;">
             <div class="modal-msg">CUSTOM PAYOUT RATES</div>
-            <div style="font-size: 16px; color: #aaa;">STUDY PAYOUT (TOKENS PER HOUR):</div>
+            <div style="font-size: 16px; color: var(--text-muted);">STUDY PAYOUT (TOKENS PER HOUR):</div>
             <input type="number" id="eco-study-rate" class="modal-input" step="0.25">
-            <div style="font-size: 16px; color: #aaa;">VAULT CASH MULTIPLIER ($ PER TOKEN):</div>
+            <div style="font-size: 16px; color: var(--text-muted);">VAULT CASH MULTIPLIER ($ PER TOKEN):</div>
             <input type="number" id="eco-vault-rate" class="modal-input" step="0.25">
             <div class="btn-row" style="margin-bottom: 0;">
                 <button class="btn btn-half" style="justify-content: center;" onclick="closeModal()">CANCEL</button>
@@ -536,7 +573,7 @@
         </div>
 
         <!-- DOWNTIME TIMER START CONFIRMATION -->
-        <div id="timer-prompt-box" class="modal-box" style="display: none; border-color: #fff;">
+        <div id="timer-prompt-box" class="modal-box" style="display: none; border-color: var(--accent);">
             <div class="modal-msg" id="timer-prompt-msg">START DOWNTIME TIMER NOW?</div>
             <div class="btn-row" style="margin-bottom: 0;">
                 <button class="btn btn-half" style="justify-content: center;" onclick="executeSpendTokens(false)">JUST SPEND</button>
@@ -544,9 +581,9 @@
             </div>
         </div>
 
-        <div id="nuclear-box" class="modal-box" style="display: none; border-color: #fff;">
-            <div class="modal-msg" style="color: #fff;">⚠️ WARNING: NUCLEAR RESET</div>
-            <div style="font-size: 16px; color: #aaa; text-align: center; line-height: 1.2;">
+        <div id="nuclear-box" class="modal-box" style="display: none; border-color: #ff8a8a;">
+            <div class="modal-msg" style="color: #ff8a8a;">⚠️ WARNING: NUCLEAR RESET</div>
+            <div style="font-size: 16px; color: var(--text-muted); text-align: center; line-height: 1.2;">
                 THIS WILL PERMANENTLY WIPE ALL TOKENS, VAULT CASH, STREAKS, AND CUSTOM ROUTINES. THIS CANNOT BE UNDONE!
             </div>
             <div class="btn-row" style="margin-bottom: 0;">
@@ -577,7 +614,7 @@
             <div class="modal-msg" id="edit-modal-title" style="margin-bottom:0;">EDIT ROUTINE</div>
             <div id="edit-list-container" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;"></div>
             
-            <div style="border-top: 1px dashed #444; padding-top: 12px; display:flex; gap:6px;">
+            <div style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; display:flex; gap:6px;">
                 <input type="text" id="new-h-icon" class="modal-input" placeholder="IC" maxlength="2" style="width: 22%; padding:8px 2px;">
                 <input type="text" id="new-h-name" class="modal-input" placeholder="ITEM NAME" style="flex-grow:1; padding:8px 6px;">
                 <input type="number" id="new-h-pay" class="modal-input" placeholder="+1.00" step="0.05" style="width: 28%; padding:8px 2px;">
@@ -644,9 +681,7 @@
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
                     new Notification(title, { body: body });
-                } catch (e) {
-                    console.log("Notification fallback error", e);
-                }
+                } catch (e) {}
             }
         }
 
@@ -667,7 +702,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 4.0,
+            version: 4.2,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -676,7 +711,7 @@
             studyBlocks: 0,
             webhookUrl: "",
             soundEnabled: true,
-            theme: "cappuccino",
+            theme: "macchiato",
             studyRate: 1.50,
             vaultMultiplier: 2.50,
             timerEndTime: null,
@@ -707,7 +742,7 @@
             if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
             if (state.studyRate === undefined) state.studyRate = 1.50;
             if (state.vaultMultiplier === undefined) state.vaultMultiplier = 2.50;
-            if (state.theme === undefined) state.theme = "cappuccino";
+            if (state.theme === undefined) state.theme = "macchiato";
         }
 
         document.body.className = "theme-" + state.theme;
@@ -715,7 +750,7 @@
 
         function toggleTheme() {
             triggerHaptic();
-            const themes = ["cappuccino", "latte", "espresso", "classic"];
+            const themes = ["macchiato", "mocha", "frappe", "latte"];
             let nextIndex = (themes.indexOf(state.theme) + 1) % themes.length;
             state.theme = themes[nextIndex];
             document.body.className = "theme-" + state.theme;
@@ -758,23 +793,16 @@
         }
 
         function updateCompanionMood() {
-            const emojiEl = document.getElementById('companion-emoji');
             const moodEl = document.getElementById('companion-mood');
-            
             if (state.focusEndTime) {
-                emojiEl.innerText = "🍅";
                 moodEl.innerText = "FOCUSED";
             } else if (state.timerEndTime) {
-                emojiEl.innerText = "💤";
                 moodEl.innerText = "CHILLING";
             } else if (state.streak >= 3) {
-                emojiEl.innerText = "🐱🔥";
                 moodEl.innerText = "PROUD";
             } else if (state.baselineMet) {
-                emojiEl.innerText = "✨";
                 moodEl.innerText = "HAPPY";
             } else {
-                emojiEl.innerText = "☕";
                 moodEl.innerText = "WAITING";
             }
         }
@@ -1005,7 +1033,6 @@
                 if (state.timerEndTime) {
                     const remaining = state.timerEndTime - now;
                     document.getElementById('session-title').innerText = "⏳ DOWNTIME BREAK ACTIVE";
-                    document.getElementById('session-banner-style').style.borderColor = "#666";
 
                     if (remaining <= 0) {
                         state.timerEndTime = null;
@@ -1034,7 +1061,6 @@
                 if (state.focusEndTime) {
                     const remaining = state.focusEndTime - now;
                     document.getElementById('session-title').innerText = "🍅 FOCUS SESSION (DO NOT LEAVE)";
-                    document.getElementById('session-banner-style').style.borderColor = "#fff";
 
                     if (remaining <= 0) {
                         const mins = state.focusMinutesTotal;
@@ -1348,8 +1374,8 @@
                         state = { ...DEFAULT_STATE, ...imported };
                         if (!state.flexibleEngine) state.flexibleEngine = [...DEFAULT_STATE.flexibleEngine];
                         if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
-                        document.body.className = "theme-" + (state.theme || "cappuccino");
-                        document.getElementById('theme-name').innerText = (state.theme || "cappuccino").toUpperCase();
+                        document.body.className = "theme-" + (state.theme || "macchiato");
+                        document.getElementById('theme-name').innerText = (state.theme || "macchiato").toUpperCase();
                         evaluateBaseline(); saveState(); playDing(); 
                         customAlert("DATA RESTORED SUCCESSFULLY!");
                         sendWebhook("DATA RESTORED", `📥 Data successfully restored via import save.`);
