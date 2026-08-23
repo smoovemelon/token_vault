@@ -22,7 +22,7 @@
             --radius-btn: 10px;
         }
 
-        /* CLASSIC 1-BIT THEMES (LIGHT / DARK) */
+        /* CLASSIC 1-BIT THEMES */
         body.theme-light {
             --bg-main: #ffffff;
             --bg-card: #000000;
@@ -44,7 +44,7 @@
             --bg-check-on: #ffffff;
             --text-dark: #ffffff;
             --text-light: #ffffff;
-            --text-muted: #aaaaaa;
+            --text-muted: #cccccc;
         }
 
         * {
@@ -75,7 +75,33 @@
             gap: 16px;
         }
 
-        /* Perfectly Centered Top Header & Companion Box */
+        /* PURE CSS PIXEL ICON SPRITES */
+        .pixel-icon {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            position: relative;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+        .px-gear::before { content: ''; position: absolute; width: 6px; height: 6px; border: 2px solid currentColor; top: 4px; left: 4px; }
+        .px-gear::after { content: ''; position: absolute; width: 2px; height: 10px; background: currentColor; top: 2px; left: 6px; }
+        .px-cart::before { content: ''; position: absolute; width: 10px; height: 6px; border-bottom: 2px solid currentColor; border-left: 2px solid currentColor; bottom: 2px; left: 2px; }
+        .px-cart::after { content: ''; position: absolute; width: 2px; height: 6px; background: currentColor; top: 2px; left: 4px; }
+        .px-info::before { content: ''; position: absolute; width: 2px; height: 2px; background: currentColor; top: 2px; left: 6px; }
+        .px-info::after { content: ''; position: absolute; width: 2px; height: 8px; background: currentColor; top: 5px; left: 6px; }
+        .px-palette::before { content: ''; position: absolute; width: 10px; height: 8px; border: 2px solid currentColor; border-radius: 4px; top: 3px; left: 2px; }
+        .px-sound::before { content: ''; position: absolute; width: 4px; height: 6px; background: currentColor; top: 4px; left: 2px; }
+        .px-sound::after { content: ''; position: absolute; width: 6px; height: 10px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; top: 2px; left: 6px; }
+        .px-link::before { content: ''; position: absolute; width: 8px; height: 4px; border: 2px solid currentColor; top: 5px; left: 3px; }
+        .px-export::before { content: ''; position: absolute; width: 8px; height: 10px; border: 2px solid currentColor; top: 2px; left: 4px; }
+        .px-export::after { content: ''; position: absolute; width: 4px; height: 2px; background: currentColor; top: 7px; left: 5px; }
+        .px-import::before { content: ''; position: absolute; width: 8px; height: 10px; border: 2px solid currentColor; top: 2px; left: 4px; }
+        .px-import::after { content: ''; position: absolute; width: 4px; height: 2px; background: currentColor; top: 3px; left: 5px; }
+        .px-warn::before { content: ''; position: absolute; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid currentColor; top: 1px; left: 0; }
+        .px-check::before { content: ''; position: absolute; width: 4px; height: 8px; border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); top: 2px; left: 5px; }
+
+        /* Top Header & Companion Box */
         .header {
             display: flex;
             justify-content: space-between;
@@ -109,6 +135,7 @@
             color: var(--text-light);
             box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
             height: 52px;
+            margin-top: 4px;
         }
 
         @keyframes catBreathe {
@@ -122,6 +149,7 @@
             position: relative;
             animation: catBreathe 2s ease-in-out infinite;
             flex-shrink: 0;
+            top: 1px;
         }
 
         .pixel-cat .ear-l, .pixel-cat .ear-r {
@@ -242,14 +270,14 @@
             width: 40px;
             height: 40px;
             background-color: var(--bg-icon);
-            color: var(--text-dark);
+            color: var(--bg-card);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             flex-shrink: 0;
-            font-weight: bold;
+            font-weight: 500;
             border: 2px solid currentColor;
         }
 
@@ -308,7 +336,7 @@
             width: 40px;
             height: 40px;
             background-color: var(--bg-icon);
-            color: var(--text-dark);
+            color: var(--bg-card);
             border: 2px solid currentColor;
             border-radius: 8px;
             font-size: 26px;
@@ -316,6 +344,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            font-weight: 500;
         }
         
         .study-btn:active { opacity: 0.8; }
@@ -328,7 +357,7 @@
             color: var(--text-light);
         }
 
-        /* Buttons */
+        /* Buttons & Tightened Spacing */
         .btn {
             background-color: var(--bg-subcard);
             color: var(--text-light);
@@ -347,7 +376,7 @@
         .btn:active { opacity: 0.85; }
         
         .btn-half { width: calc(50% - 4px); display: inline-flex; justify-content: center; }
-        .btn-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .btn-row { display: flex; gap: 8px; margin-bottom: 6px; }
         
         .btn-green { background-color: #fff; color: #000; border-color: #fff; font-weight: bold; }
         .btn-green:active { background-color: #ccc; }
@@ -376,7 +405,7 @@
 <body class="theme-light">
 
     <div class="container">
-        <!-- HEADER WITH PERFECTLY CENTERED PIXEL CAT COMPANION -->
+        <!-- HEADER WITH CENTERED PIXEL CAT COMPANION -->
         <div class="header">
             <div class="header-left">
                 <h1>TORO TRACKER</h1>
@@ -450,14 +479,14 @@
         <div class="card">
             <div class="stat-label" id="routine-title" style="margin-bottom: 2px;">DAILY ROUTINE</div>
             <div class="task-list" id="routine-container"></div>
-            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('routine')">⚙️ EDIT ROUTINE</button>
+            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('routine')"><i class="pixel-icon px-gear"></i> EDIT ROUTINE</button>
         </div>
 
         <!-- DYNAMIC FLEXIBLE ENGINE CARD -->
         <div class="card">
             <div class="stat-label" style="margin-bottom: 2px;">FLEXIBLE ENGINE</div>
             <div class="task-list" id="flexible-container"></div>
-            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('flexible')">⚙️ EDIT FLEXIBLE</button>
+            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('flexible')"><i class="pixel-icon px-gear"></i> EDIT FLEXIBLE</button>
 
             <div style="margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px;">
                 <div class="task-details" style="margin-left: 0; margin-bottom: 8px;">
@@ -478,28 +507,28 @@
             </div>
         </div>
 
-        <!-- SPEND & REDEEM CARD -->
-        <div class="card">
-            <div class="stat-label" style="margin-bottom: 2px;">SPEND & REDEEM</div>
+        <!-- SPEND & REDEEM CARD (TIGHTENED SPACING) -->
+        <div class="card" style="gap: 8px;">
+            <div class="stat-label" style="margin-bottom: 0px;">SPEND & REDEEM</div>
             
-            <div class="btn-row">
+            <div class="btn-row" style="margin-bottom: 4px;">
                 <button class="btn btn-half" onclick="promptSpendTokens(0.50, 30, '30M DOWNTIME')">30M (-0.50)</button>
                 <button class="btn btn-half" onclick="promptSpendTokens(1.00, 60, '1H DOWNTIME')">1HR (-1.00)</button>
             </div>
             
-            <button class="btn btn-green" style="margin-bottom: 8px;" onclick="bankToVault()">
+            <button class="btn btn-green" style="margin-bottom: 4px;" onclick="bankToVault()">
                 <span>BANK TO VAULT</span>
                 <span style="font-size: 18px;">-1.00 ➔ $2.50</span>
             </button>
             
             <button class="btn" style="justify-content: center; margin-bottom: 0;" onclick="spendVaultCash()">
-                🛒 SPEND VAULT CASH
+                <i class="pixel-icon px-cart"></i> SPEND VAULT CASH
             </button>
         </div>
 
         <!-- RULES & CONVERSIONS CARD -->
         <div class="card">
-            <div class="stat-label" style="margin-bottom: 2px;">ℹ️ RULES & CONVERSIONS</div>
+            <div class="stat-label" style="margin-bottom: 2px;"><i class="pixel-icon px-info"></i> RULES & CONVERSIONS</div>
             <div class="rules-box">
                 <div>• STUDY: <span>1 HR = +1.50 TOKENS</span></div>
                 <div>• BANKING: <span>1.00 TOKEN = $2.50 VAULT</span></div>
@@ -509,14 +538,14 @@
 
         <!-- SETTINGS -->
         <div class="settings-grid">
-            <div class="data-btn" onclick="toggleTheme()">🎨 THEME: <span id="theme-name">LIGHT</span></div>
-            <div class="data-btn" onclick="toggleSound()">🔊 SOUND: <span id="sound-status">ON</span></div>
-            <div class="data-btn" onclick="promptWebhookSetup()">🔗 WEBHOOK</div>
-            <div class="data-btn" onclick="exportData()">EXPORT</div>
-            <div class="data-btn" onclick="document.getElementById('import-file').click()">IMPORT</div>
+            <div class="data-btn" onclick="toggleTheme()"><i class="pixel-icon px-palette"></i> THEME: <span id="theme-name">LIGHT</span></div>
+            <div class="data-btn" onclick="toggleSound()"><i class="pixel-icon px-sound"></i> SOUND: <span id="sound-status">ON</span></div>
+            <div class="data-btn" onclick="promptWebhookSetup()"><i class="pixel-icon px-link"></i> WEBHOOK</div>
+            <div class="data-btn" onclick="exportData()"><i class="pixel-icon px-export"></i> EXPORT</div>
+            <div class="data-btn" onclick="document.getElementById('import-file').click()"><i class="pixel-icon px-import"></i> IMPORT</div>
+            <div class="data-btn" onclick="promptNuclearReset()"><i class="pixel-icon px-warn" style="color:#ff8a8a;"></i> RESET</div>
             <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
         </div>
-        <button class="btn btn-red" style="justify-content: center; font-size: 18px; min-height: 40px;" onclick="promptNuclearReset()">⚠️ RESET ALL PROGRESS</button>
     </div>
 
     <!-- CUSTOM OVERLAY POP-UPS -->
@@ -543,9 +572,9 @@
             </div>
         </div>
 
-        <div id="nuclear-box" class="modal-box" style="display: none; border-color: #fff;">
-            <div class="modal-msg" style="color: #fff;">⚠️ WARNING: NUCLEAR RESET</div>
-            <div style="font-size: 16px; color: #aaa; text-align: center; line-height: 1.2;">
+        <div id="nuclear-box" class="modal-box" style="display: none; border-color: #ff8a8a;">
+            <div class="modal-msg" style="color: #ff8a8a;">⚠️ WARNING: NUCLEAR RESET</div>
+            <div style="font-size: 16px; color: var(--text-muted); text-align: center; line-height: 1.2;">
                 THIS WILL PERMANENTLY WIPE ALL TOKENS, VAULT CASH, STREAKS, AND CUSTOM ROUTINES. THIS CANNOT BE UNDONE!
             </div>
             <div class="btn-row" style="margin-bottom: 0;">
@@ -664,7 +693,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 4.4,
+            version: 4.6,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
