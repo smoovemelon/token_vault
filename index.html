@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Toro Tracker</title>
     
-    <!-- RESTORED ROBUST INLINE WEB MANIFEST -->
+    <!-- INLINE WEB APP MANIFEST -->
     <link rel="manifest" href='data:application/manifest+json,{"name":"Toro Tracker","short_name":"Toro","start_url":"./","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><rect width=\"16\" height=\"16\" fill=\"white\"/><rect x=\"3\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"11\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"5\" y=\"5\" width=\"6\" height=\"1\" fill=\"black\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"13\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"3\" y=\"11\" width=\"10\" height=\"1\" fill=\"black\"/><rect x=\"4\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"10\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"7\" y=\"9\" width=\"2\" height=\"1\" fill=\"black\"/></svg>","sizes":"192x192 512x512","type":"image/svg+xml"}]}'>
 
     <!-- INLINE PIXEL CAT ICON -->
@@ -256,12 +256,16 @@
             margin-left: 12px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .task-title {
             font-size: 22px;
             letter-spacing: 1px;
             color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .task-subtitle {
@@ -353,7 +357,7 @@
         .rules-box span { color: var(--text-light); font-weight: bold; }
 
         .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
-        .data-btn { background: var(--bg-subcard); border: 2px solid #444; color: var(--text-muted); border-radius: var(--radius-btn); font-size: 16px; text-align: center; padding: 12px; cursor: pointer; font-family: 'VT323', monospace; }
+        .data-btn { background: var(--bg-subcard); border: 2px solid #444; color: var(--text-muted); border-radius: var(--radius-btn); font-size: 16px; text-align: center; padding: 12px; cursor: pointer; }
         .data-btn:active { opacity: 0.8; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -361,8 +365,8 @@
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; animation: fadeIn 0.1s ease-out; }
         .modal-box { background-color: var(--bg-card); border-radius: var(--radius-card); padding: 22px; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; box-shadow: 6px 6px 0px rgba(0,0,0,0.5); color: var(--text-light); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid currentColor; }
-        .modal-msg { font-size: 22px; text-align: center; line-height: 1.2; letter-spacing: 1px; color: var(--text-light); }
-        .modal-input { width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-subcard); border: 2px solid #444; color: var(--text-light); font-size: 22px; text-align: center; outline: none; font-family: 'VT323', monospace; }
+        .modal-msg { font-size: 22px; text-align: center; line-height: 1.2; letter-spacing: 1px; color: var(--text-light); white-space: pre-line; }
+        .modal-input { width: 100%; padding: 10px; border-radius: 8px; background: var(--bg-subcard); border: 2px solid #444; color: var(--text-light); font-size: 22px; text-align: center; outline: none; }
         .modal-input:focus { border-color: #fff; }
         .modal-list-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-subcard); padding: 8px 10px; border-radius: 8px; font-size: 18px; border: 1px solid rgba(255,255,255,0.1); color: var(--text-light); }
     </style>
@@ -370,7 +374,7 @@
 <body class="theme-light">
 
     <div class="container">
-        <!-- HEADER WITH COMPANION BOX -->
+        <!-- HEADER WITH COMPANION -->
         <div class="header">
             <div class="header-left">
                 <h1>TORO TRACKER</h1>
@@ -392,7 +396,7 @@
             </div>
         </div>
 
-        <!-- DASHBOARD CARD -->
+        <!-- DASHBOARD -->
         <div class="card">
             <div class="dashboard-grid">
                 <div class="stat-box streak-box">
@@ -409,9 +413,9 @@
                 </div>
             </div>
 
-            <!-- UNIFIED ACTIVE SESSION WIDGET -->
+            <!-- ACTIVE SESSION WIDGET -->
             <div id="active-session-wrapper" style="display: none;">
-                <div class="timer-banner" id="session-banner-style">
+                <div class="timer-banner">
                     <div>
                         <span class="stat-label" id="session-title" style="display:block; font-size:12px;">⏳ ACTIVE SESSION</span>
                         <span class="timer-display" id="session-countdown">00:00</span>
@@ -420,7 +424,7 @@
                 </div>
             </div>
 
-            <!-- TODAY'S ACTIVITY LOG -->
+            <!-- TODAY'S LEDGER -->
             <div style="border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px;">
                 <span class="stat-label" style="display:block; margin-bottom:6px;">📅 TODAY'S LEDGER</span>
                 <div class="daily-log-grid">
@@ -440,14 +444,14 @@
             </div>
         </div>
 
-        <!-- DYNAMIC BASELINE CARD -->
+        <!-- DAILY ROUTINE -->
         <div class="card">
             <div class="stat-label" id="routine-title" style="margin-bottom: 2px;">DAILY ROUTINE</div>
             <div class="task-list" id="routine-container"></div>
             <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('routine')">⚙️ EDIT ROUTINE</button>
         </div>
 
-        <!-- DYNAMIC FLEXIBLE ENGINE CARD -->
+        <!-- FLEXIBLE ENGINE -->
         <div class="card">
             <div class="stat-label" style="margin-bottom: 2px;">FLEXIBLE ENGINE</div>
             <div class="task-list" id="flexible-container"></div>
@@ -466,13 +470,13 @@
 
                 <div class="study-controls">
                     <button class="study-btn" onclick="adjustStudy(-1)">-</button>
-                    <div class="study-display"><span id="study-count">0</span> HRS</div>
+                    <div class="study-display"><span id="study-count">0.00</span> HRS</div>
                     <button class="study-btn" onclick="adjustStudy(1)">+</button>
                 </div>
             </div>
         </div>
 
-        <!-- SPEND & REDEEM CARD -->
+        <!-- SPEND & REDEEM -->
         <div class="card" style="gap: 8px;">
             <div class="stat-label" style="margin-bottom: 0px;">SPEND & REDEEM</div>
             
@@ -491,7 +495,7 @@
             </button>
         </div>
 
-        <!-- RULES & CONVERSIONS CARD -->
+        <!-- RULES -->
         <div class="card">
             <div class="stat-label" style="margin-bottom: 2px;">ℹ️ RULES & CONVERSIONS</div>
             <div class="rules-box">
@@ -513,7 +517,7 @@
         <button class="btn btn-red" style="justify-content: center; font-size: 18px; min-height: 40px;" onclick="promptNuclearReset()">⚠️ RESET ALL PROGRESS</button>
     </div>
 
-    <!-- CUSTOM OVERLAY POP-UPS -->
+    <!-- MODALS -->
     <div id="modal-overlay" class="modal-overlay" style="display: none;">
         <div id="alert-box" class="modal-box" style="display: none;">
             <div id="alert-msg" class="modal-msg"></div>
@@ -528,7 +532,6 @@
             </div>
         </div>
 
-        <!-- DOWNTIME TIMER START CONFIRMATION -->
         <div id="timer-prompt-box" class="modal-box" style="display: none; border-color: #fff;">
             <div class="modal-msg" id="timer-prompt-msg">START DOWNTIME TIMER NOW?</div>
             <div class="btn-row" style="margin-bottom: 0;">
@@ -585,10 +588,13 @@
 
     <script>
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx;
-        function initAudio() { 
-            if (!audioCtx) audioCtx = new AudioContext(); 
-            if (audioCtx.state === 'suspended') audioCtx.resume(); 
+        let audioCtx = null;
+
+        function initAudio() {
+            try {
+                if (!audioCtx) audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            } catch (e) {}
         }
 
         window.addEventListener('touchstart', initAudio, { once: true });
@@ -596,31 +602,55 @@
         
         function playDing() {
             if (!state.soundEnabled) return;
-            initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+            initAudio();
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
             osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
         }
 
         function playBloop() {
             if (!state.soundEnabled) return;
-            initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-            osc.type = 'square'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+            initAudio();
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
         }
 
         function playAlarmBeeps() {
             if (!state.soundEnabled) return;
             initAudio();
+            if (!audioCtx) return;
             for (let i = 0; i < 4; i++) {
                 setTimeout(() => {
-                    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-                    osc.type = 'square'; osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
-                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+                    if (!audioCtx) return;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
                 }, i * 300);
             }
         }
@@ -635,9 +665,7 @@
 
         function fireNativeNotification(title, body) {
             if ("Notification" in window && Notification.permission === "granted") {
-                try {
-                    new Notification(title, { body: body });
-                } catch (e) {}
+                try { new Notification(title, { body: body }); } catch (e) {}
             }
         }
 
@@ -650,21 +678,44 @@
             }
         }
 
+        let wakeLockObj = null;
+        async function acquireWakeLock() {
+            try {
+                if ('wakeLock' in navigator && !wakeLockObj) {
+                    wakeLockObj = await navigator.wakeLock.request('screen');
+                }
+            } catch (e) {}
+        }
+
+        function releaseWakeLock() {
+            if (wakeLockObj) {
+                wakeLockObj.release().catch(() => {});
+                wakeLockObj = null;
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function getLocalISODate(d = new Date()) {
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
-        function getISODate(d = new Date()) {
-            return d.toISOString().split('T')[0];
-        }
-
         const DEFAULT_STATE = {
-            version: 5.3,
+            version: 5.5,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
             baselineMet: false,
-            lastDate: getISODate(),
-            studyBlocks: 0,
+            lastDate: getLocalISODate(),
+            studyBlocks: 0.00,
             webhookUrl: "",
             soundEnabled: true,
             theme: "light",
@@ -683,18 +734,20 @@
             todayLog: { earned: 0.00, spent: 0.00, banked: 0.00 }
         };
 
-        let loadedState = JSON.parse(localStorage.getItem('toroTrackerApp'));
-        if (!loadedState) {
-            const oldLoad = JSON.parse(localStorage.getItem('tokenApp'));
-            if (oldLoad) loadedState = oldLoad;
-        }
+        let loadedState = null;
+        try {
+            loadedState = JSON.parse(localStorage.getItem('toroTrackerApp')) || JSON.parse(localStorage.getItem('tokenApp'));
+        } catch (e) {}
 
         let state = { ...DEFAULT_STATE };
         if (loadedState) {
-            state = { ...DEFAULT_STATE, ...loadedState };
-            if (!state.flexibleEngine) state.flexibleEngine = [...DEFAULT_STATE.flexibleEngine];
-            if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
-            if (state.theme === undefined) state.theme = "light";
+            state = {
+                ...DEFAULT_STATE,
+                ...loadedState,
+                todayLog: { ...DEFAULT_STATE.todayLog, ...(loadedState.todayLog || {}) },
+                dailyRoutine: Array.isArray(loadedState.dailyRoutine) ? loadedState.dailyRoutine : [...DEFAULT_STATE.dailyRoutine],
+                flexibleEngine: Array.isArray(loadedState.flexibleEngine) ? loadedState.flexibleEngine : [...DEFAULT_STATE.flexibleEngine]
+            };
         }
 
         document.body.className = "theme-" + state.theme;
@@ -758,32 +811,38 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
-            }).catch(err => console.error("Webhook failed", err));
+            }).catch(() => {});
         }
 
-        const todayStr = getISODate();
-        if (state.lastDate !== todayStr) {
-            let yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-            let yesterdayStr = getISODate(yesterday);
+        function checkDayRollover() {
+            const todayStr = getLocalISODate();
+            if (state.lastDate !== todayStr) {
+                let yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                let yesterdayStr = getLocalISODate(yesterday);
 
-            if (state.lastDate === yesterdayStr && state.baselineMet) { 
-                state.streak += 1; 
-                sendWebhook("STREAK UPDATED", `🔥 Baseline streak advanced to **${state.streak} Days**!`);
-            } else { 
-                if (state.streak > 0) sendWebhook("STREAK RESET", `💔 Baseline missed. Streak reset to 0.`);
-                state.streak = 0; 
+                if (state.lastDate === yesterdayStr && state.baselineMet) { 
+                    state.streak += 1; 
+                    sendWebhook("STREAK UPDATED", `🔥 Baseline streak advanced to **${state.streak} Days**!`);
+                } else { 
+                    if (state.streak > 0) sendWebhook("STREAK RESET", `💔 Baseline missed. Streak reset to 0.`);
+                    state.streak = 0; 
+                }
+                state.dailyRoutine.forEach(h => h.checked = false);
+                state.flexibleEngine.forEach(f => f.checked = false);
+                state.studyBlocks = 0.00;
+                state.baselineMet = false;
+                state.lastDate = todayStr;
+                state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
+                state.timerEndTime = null;
+                state.focusEndTime = null;
+                releaseWakeLock();
+                updateAppBadge(0);
+                saveState();
+                document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
             }
-            state.dailyRoutine.forEach(h => h.checked = false);
-            state.flexibleEngine.forEach(f => f.checked = false);
-            state.studyBlocks = 0;
-            state.baselineMet = false;
-            state.lastDate = todayStr;
-            state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
-            state.timerEndTime = null;
-            state.focusEndTime = null;
-            updateAppBadge(0);
-            saveState();
         }
+        checkDayRollover();
 
         let promptCallback = null;
         let confirmCallback = null;
@@ -837,6 +896,7 @@
             sendWebhook("NUCLEAR RESET", `⚠️ All progress, tokens, vault cash, and streaks were wiped clean.`);
             localStorage.removeItem('toroTrackerApp');
             state = { ...DEFAULT_STATE };
+            releaseWakeLock();
             updateAppBadge(0);
             saveState();
             closeModal();
@@ -879,7 +939,6 @@
             promptCallback = null;
         }
 
-        // Downtime Timer Flow
         function promptSpendTokens(cost, minutes, name) {
             triggerHaptic();
             if (state.focusEndTime) {
@@ -903,14 +962,13 @@
         function executeSpendTokens(startTimer) {
             closeModal();
             playBloop();
-            state.tokens -= pendingSpendCost;
-            state.todayLog.spent += pendingSpendCost;
+            state.tokens = Math.max(0, Math.round((state.tokens - pendingSpendCost) * 100) / 100);
+            state.todayLog.spent = Math.round((state.todayLog.spent + pendingSpendCost) * 100) / 100;
 
             if (startTimer) {
                 requestNotificationPermission();
                 state.focusEndTime = null;
-                const now = Date.now();
-                state.timerEndTime = now + (pendingSpendMins * 60 * 1000);
+                state.timerEndTime = Date.now() + (pendingSpendMins * 60 * 1000);
                 startMasterEngine();
                 updateAppBadge(1);
                 sendWebhook("DOWNTIME REDEEMED", `🛋️ Spent **${pendingSpendCost.toFixed(2)} tokens** on ${pendingSpendName} | **${pendingSpendMins}m Timer Started** ⏱️`);
@@ -925,13 +983,13 @@
             triggerHaptic();
             state.timerEndTime = null;
             state.focusEndTime = null;
+            releaseWakeLock();
             updateAppBadge(0);
             updateCompanionMood();
             saveState();
             document.getElementById('active-session-wrapper').style.display = 'none';
         }
 
-        // Focus Pomodoro Flow
         function startFocusPomodoro(minutes) {
             triggerHaptic();
             if (state.timerEndTime) {
@@ -943,6 +1001,7 @@
                 return;
             }
             requestNotificationPermission();
+            acquireWakeLock();
             state.focusEndTime = Date.now() + (minutes * 60 * 1000);
             state.focusMinutesTotal = minutes;
             saveState();
@@ -952,15 +1011,14 @@
             sendWebhook("FOCUS STARTED", `🍅 **${minutes}M Focus Session** started! No leaving the app! 🛡️`);
         }
 
-        // Unified Master Engine for Timers
         function startMasterEngine() {
             if (masterInterval) clearInterval(masterInterval);
             document.getElementById('active-session-wrapper').style.display = 'block';
 
             masterInterval = setInterval(() => {
+                checkDayRollover();
                 const now = Date.now();
 
-                // Check Downtime Timer
                 if (state.timerEndTime) {
                     const remaining = state.timerEndTime - now;
                     document.getElementById('session-title').innerText = "⏳ DOWNTIME BREAK ACTIVE";
@@ -979,7 +1037,7 @@
                         sendWebhook("DOWNTIME ENDED", "🚨 **Downtime session has expired!** Time to get back to work! ⚡");
                         customAlert("🚨 DOWNTIME BREAK OVER! GET BACK TO WORK!");
                     } else {
-                        const totalSecs = Math.floor(remaining / 1000);
+                        const totalSecs = Math.max(0, Math.floor(remaining / 1000));
                         const mins = Math.floor(totalSecs / 60);
                         const secs = totalSecs % 60;
                         document.getElementById('session-countdown').innerText = 
@@ -988,7 +1046,6 @@
                     return;
                 }
 
-                // Check Focus Pomodoro Timer
                 if (state.focusEndTime) {
                     const remaining = state.focusEndTime - now;
                     document.getElementById('session-title').innerText = "🍅 FOCUS SESSION (DO NOT LEAVE)";
@@ -996,11 +1053,13 @@
                     if (remaining <= 0) {
                         const mins = state.focusMinutesTotal;
                         state.focusEndTime = null;
+                        releaseWakeLock();
                         
                         const earnedTokens = Math.round((mins / 60) * 1.50 * 100) / 100;
-                        state.studyBlocks += (mins / 60);
-                        state.tokens += earnedTokens;
-                        state.todayLog.earned += earnedTokens;
+                        state.studyBlocks = Math.round((state.studyBlocks + (mins / 60)) * 100) / 100;
+                        state.tokens = Math.round((state.tokens + earnedTokens) * 100) / 100;
+                        state.todayLog.earned = Math.round((state.todayLog.earned + earnedTokens) * 100) / 100;
+                        
                         updateAppBadge(0);
                         updateCompanionMood();
                         saveState();
@@ -1014,7 +1073,7 @@
                         sendWebhook("FOCUS COMPLETED", `🍅 **${mins}M Focus Session completed!** Earned **+${earnedTokens.toFixed(2)} tokens** 🎉`);
                         customAlert(`🍅 FOCUS COMPLETE! +${earnedTokens.toFixed(2)} TOKENS EARNED!`);
                     } else {
-                        const totalSecs = Math.floor(remaining / 1000);
+                        const totalSecs = Math.max(0, Math.floor(remaining / 1000));
                         const mins = Math.floor(totalSecs / 60);
                         const secs = totalSecs % 60;
                         document.getElementById('session-countdown').innerText = 
@@ -1028,10 +1087,11 @@
             }, 1000);
         }
 
-        // Tab Switch Protection Listener
         document.addEventListener("visibilitychange", () => {
+            checkDayRollover();
             if (document.hidden && state.focusEndTime) {
                 state.focusEndTime = null;
+                releaseWakeLock();
                 if (masterInterval) clearInterval(masterInterval);
                 updateAppBadge(0);
                 updateCompanionMood();
@@ -1066,9 +1126,9 @@
                     <div class="modal-list-item">
                         <div style="display:flex; align-items:center; gap:6px;">
                             ${upBtn} ${downBtn}
-                            <span>[${item.icon}]</span>
+                            <span>[${escapeHtml(item.icon)}]</span>
                         </div>
-                        <span style="flex-grow:1; margin-left:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</span>
+                        <span style="flex-grow:1; margin-left:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(item.name)}</span>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span>+${item.payout.toFixed(2)}</span>
                             ${deleteBtn}
@@ -1102,7 +1162,9 @@
             document.getElementById('new-h-name').value = '';
             document.getElementById('new-h-pay').value = '';
             
-            evaluateBaseline(); saveState(); renderEditList();
+            evaluateBaseline();
+            saveState();
+            renderEditList();
             sendWebhook("ROUTINE UPDATED", `⚙️ Added ${currentEditMode} item: **[${icon}] ${name}** (+${payout.toFixed(2)} tokens)`);
         }
 
@@ -1115,7 +1177,9 @@
                 return;
             }
             list.splice(index, 1);
-            evaluateBaseline(); saveState(); renderEditList();
+            evaluateBaseline();
+            saveState();
+            renderEditList();
             sendWebhook("ROUTINE UPDATED", `⚙️ Deleted ${currentEditMode} item: **${item.name}**`);
         }
 
@@ -1129,7 +1193,6 @@
             document.getElementById('log-spent').innerText = "-" + (state.todayLog?.spent || 0).toFixed(2);
             document.getElementById('log-banked').innerText = "$" + (state.todayLog?.banked || 0).toFixed(2);
 
-            // Render Daily Routine
             const routineContainer = document.getElementById('routine-container');
             routineContainer.innerHTML = '';
             let totalRoutinePayout = 0;
@@ -1140,9 +1203,9 @@
                 const checkText = habit.checked ? '✓' : '';
                 routineContainer.innerHTML += `
                     <div class="task-item" onclick="promptRoutineHabit(${i})">
-                        <div class="task-icon">${habit.icon}</div>
+                        <div class="task-icon">${escapeHtml(habit.icon)}</div>
                         <div class="task-details">
-                            <div class="task-title">${habit.name}</div>
+                            <div class="task-title">${escapeHtml(habit.name)}</div>
                             <div class="task-subtitle">+${habit.payout.toFixed(2)} TOKENS ${habit.checked ? '(LOCKED)' : ''}</div>
                         </div>
                         <div class="${checkClass}">${checkText}</div>
@@ -1151,7 +1214,6 @@
             });
             document.getElementById('routine-title').innerText = `DAILY ROUTINE (${totalRoutinePayout.toFixed(2)})`;
 
-            // Render Flexible Engine Tasks
             const flexibleContainer = document.getElementById('flexible-container');
             flexibleContainer.innerHTML = '';
             state.flexibleEngine.forEach((flexItem, i) => {
@@ -1159,9 +1221,9 @@
                 const checkText = flexItem.checked ? '✓' : '';
                 flexibleContainer.innerHTML += `
                     <div class="task-item" onclick="promptFlexibleTask(${i})">
-                        <div class="task-icon">${flexItem.icon}</div>
+                        <div class="task-icon">${escapeHtml(flexItem.icon)}</div>
                         <div class="task-details">
-                            <div class="task-title">${flexItem.name}</div>
+                            <div class="task-title">${escapeHtml(flexItem.name)}</div>
                             <div class="task-subtitle">+${flexItem.payout.toFixed(2)} TOKENS ${flexItem.checked ? '(LOCKED)' : ''}</div>
                         </div>
                         <div class="${checkClass}">${checkText}</div>
@@ -1169,7 +1231,7 @@
                 `;
             });
 
-            const studyHours = state.studyBlocks || 0;
+            const studyHours = state.studyBlocks || 0.00;
             document.getElementById('study-count').innerText = studyHours.toFixed(2);
             document.getElementById('study-payout').innerText = "+" + (studyHours * 1.50).toFixed(2) + " TOKENS";
             updateCompanionMood();
@@ -1179,6 +1241,11 @@
             state.tokens = Math.round(state.tokens * 100) / 100;
             state.vaultCash = Math.round(state.vaultCash * 100) / 100;
             state.studyBlocks = Math.round(state.studyBlocks * 100) / 100;
+            if (state.todayLog) {
+                state.todayLog.earned = Math.round((state.todayLog.earned || 0) * 100) / 100;
+                state.todayLog.spent = Math.round((state.todayLog.spent || 0) * 100) / 100;
+                state.todayLog.banked = Math.round((state.todayLog.banked || 0) * 100) / 100;
+            }
             localStorage.setItem('toroTrackerApp', JSON.stringify(state)); 
             updateUI(); 
         }
@@ -1202,8 +1269,8 @@
             customConfirm(`LOCK IN [${habit.name}] FOR +${habit.payout.toFixed(2)} TOKENS?`, function() {
                 habit.checked = true;
                 playDing();
-                state.tokens += habit.payout;
-                state.todayLog.earned += habit.payout;
+                state.tokens = Math.round((state.tokens + habit.payout) * 100) / 100;
+                state.todayLog.earned = Math.round((state.todayLog.earned + habit.payout) * 100) / 100;
                 evaluateBaseline(); 
                 saveState();
                 sendWebhook("HABIT LOCKED", `✅ Completed: **${habit.name}** (+${habit.payout.toFixed(2)} tokens)`);
@@ -1221,8 +1288,8 @@
             customConfirm(`LOCK IN [${flexItem.name}] FOR +${flexItem.payout.toFixed(2)} TOKENS?`, function() {
                 flexItem.checked = true;
                 playDing();
-                state.tokens += flexItem.payout;
-                state.todayLog.earned += flexItem.payout;
+                state.tokens = Math.round((state.tokens + flexItem.payout) * 100) / 100;
+                state.todayLog.earned = Math.round((state.todayLog.earned + flexItem.payout) * 100) / 100;
                 saveState();
                 sendWebhook("TASK LOCKED", `🐾 Completed: **${flexItem.name}** (+${flexItem.payout.toFixed(2)} tokens)`);
             });
@@ -1232,23 +1299,22 @@
             triggerHaptic();
             if (delta > 0) {
                 playDing(); 
-                state.studyBlocks += 1.00; 
-                state.tokens += 1.50;
-                state.todayLog.earned += 1.50;
+                state.studyBlocks = Math.round((state.studyBlocks + 1.00) * 100) / 100; 
+                state.tokens = Math.round((state.tokens + 1.50) * 100) / 100;
+                state.todayLog.earned = Math.round((state.todayLog.earned + 1.50) * 100) / 100;
                 saveState();
                 sendWebhook("STUDY LOGGED", `💻 Logged **1 hr study block** (+1.50 tokens) | Total Hours: ${state.studyBlocks}`);
             } else if (delta < 0 && state.studyBlocks >= 1.00) {
                 if (state.tokens >= 1.50) {
                     playBloop(); 
-                    state.studyBlocks -= 1.00; 
-                    state.tokens -= 1.50;
-                    state.todayLog.earned = Math.max(0, state.todayLog.earned - 1.50);
+                    state.studyBlocks = Math.round((state.studyBlocks - 1.00) * 100) / 100; 
+                    state.tokens = Math.round((state.tokens - 1.50) * 100) / 100;
+                    state.todayLog.earned = Math.max(0, Math.round((state.todayLog.earned - 1.50) * 100) / 100);
                     saveState();
                     sendWebhook("STUDY UNDONE", `↩️ Undid 1 hr study block | Total Hours: ${state.studyBlocks}`);
                 } else {
                     playBloop();
                     customAlert("CANNOT UNDO STUDY: TOKENS ALREADY SPENT!");
-                    return;
                 }
             }
         }
@@ -1257,9 +1323,9 @@
             triggerHaptic();
             if (state.tokens >= 1.00) {
                 playDing(); 
-                state.tokens -= 1.00; 
-                state.vaultCash += 2.50; 
-                state.todayLog.banked += 2.50;
+                state.tokens = Math.round((state.tokens - 1.00) * 100) / 100; 
+                state.vaultCash = Math.round((state.vaultCash + 2.50) * 100) / 100; 
+                state.todayLog.banked = Math.round((state.todayLog.banked + 2.50) * 100) / 100;
                 saveState();
                 sendWebhook("VAULT BANKING", `💵 Banked 1.00 token ➔ **$2.50** added to Wardrobe Vault | Total Vault: $${state.vaultCash.toFixed(2)}`);
             } else { 
@@ -1274,9 +1340,10 @@
                 if (!amountStr) return;
                 let amount = parseFloat(amountStr);
                 if (isNaN(amount) || amount <= 0) { customAlert("INVALID AMOUNT."); return; }
+                amount = Math.round(amount * 100) / 100;
                 if (amount > state.vaultCash) { customAlert("NOT ENOUGH VAULT CASH!"); return; }
                 playBloop(); 
-                state.vaultCash -= amount; 
+                state.vaultCash = Math.round((state.vaultCash - amount) * 100) / 100; 
                 saveState();
                 sendWebhook("VAULT SPENDING", `🛍️ Spent **$${amount.toFixed(2)}** from Vault cash | Remaining Vault: $${state.vaultCash.toFixed(2)}`);
             });
@@ -1285,35 +1352,51 @@
         function exportData() {
             triggerHaptic(); playDing();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-            const dlNode = document.createElement('a'); dlNode.setAttribute("href", dataStr);
-            dlNode.setAttribute("download", `toro_tracker_backup_${todayStr}.json`);
-            document.body.appendChild(dlNode); dlNode.click(); dlNode.remove();
+            const dlNode = document.createElement('a');
+            dlNode.setAttribute("href", dataStr);
+            dlNode.setAttribute("download", `toro_tracker_backup_${getLocalISODate()}.json`);
+            document.body.appendChild(dlNode);
+            dlNode.click();
+            dlNode.remove();
         }
 
         function importData(event) {
-            triggerHaptic(); const file = event.target.files[0]; if (!file) return;
+            triggerHaptic();
+            const file = event.target.files[0];
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const imported = JSON.parse(e.target.result);
                     if (imported.tokens !== undefined) {
-                        state = { ...DEFAULT_STATE, ...imported };
-                        if (!state.flexibleEngine) state.flexibleEngine = [...DEFAULT_STATE.flexibleEngine];
-                        if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
+                        state = {
+                            ...DEFAULT_STATE,
+                            ...imported,
+                            todayLog: { ...DEFAULT_STATE.todayLog, ...(imported.todayLog || {}) },
+                            dailyRoutine: Array.isArray(imported.dailyRoutine) ? imported.dailyRoutine : [...DEFAULT_STATE.dailyRoutine],
+                            flexibleEngine: Array.isArray(imported.flexibleEngine) ? imported.flexibleEngine : [...DEFAULT_STATE.flexibleEngine]
+                        };
                         document.body.className = "theme-" + (state.theme || "light");
                         document.getElementById('theme-name').innerText = (state.theme || "light").toUpperCase();
                         document.getElementById('meta-theme-color').setAttribute('content', state.theme === 'dark' ? '#121212' : '#ffffff');
-                        evaluateBaseline(); saveState(); playDing(); 
+                        evaluateBaseline();
+                        saveState();
+                        playDing(); 
                         customAlert("DATA RESTORED SUCCESSFULLY!");
                         sendWebhook("DATA RESTORED", `📥 Data successfully restored via import save.`);
-                    } else { customAlert("INVALID BACKUP FILE."); }
-                } catch (err) { customAlert("ERROR READING FILE."); }
+                    } else {
+                        customAlert("INVALID BACKUP FILE.");
+                    }
+                } catch (err) {
+                    customAlert("ERROR READING FILE.");
+                }
             };
             reader.readAsText(file);
         }
 
         updateUI();
         if ((state.timerEndTime && state.timerEndTime > Date.now()) || (state.focusEndTime && state.focusEndTime > Date.now())) {
+            if (state.focusEndTime) acquireWakeLock();
             startMasterEngine();
             updateAppBadge(1);
         } else {
