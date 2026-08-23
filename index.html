@@ -112,12 +112,14 @@
         .btn-row { display: flex; gap: 12px; margin-bottom: 12px; }
         .btn-green { background-color: var(--bg-check-on); color: var(--text-dark); }
         .btn-green:active { background-color: #aadb85; }
+        .btn-red { background-color: rgba(255, 138, 138, 0.15); color: var(--accent-red); border: 1px solid rgba(255, 138, 138, 0.3); }
 
         .rules-box { background-color: #2c2c2e; border-radius: var(--radius-btn); padding: 14px; font-size: 18px; display: flex; flex-direction: column; gap: 6px; color: #ccc; }
         .rules-box span { color: var(--accent-blue); }
 
-        .settings-row { display: flex; justify-content: space-between; padding: 0 10px; }
-        .data-text { font-size: 20px; color: #888; cursor: pointer; padding: 10px; }
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .data-btn { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); color: var(--text-muted); border-radius: var(--radius-btn); font-size: 16px; text-align: center; padding: 14px; cursor: pointer; font-weight: 500; font-family: 'VT323', monospace; }
+        .data-btn:active { background: #2c2c2e; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -241,11 +243,12 @@
         </div>
 
         <!-- SETTINGS -->
-        <div class="settings-row">
-            <div class="data-text" onclick="exportData()">EXPORT SAVE</div>
-            <div class="data-text" onclick="document.getElementById('import-file').click()">IMPORT SAVE</div>
+        <div class="settings-grid">
+            <div class="data-btn" onclick="exportData()">EXPORT SAVE</div>
+            <div class="data-btn" onclick="document.getElementById('import-file').click()">IMPORT SAVE</div>
             <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
         </div>
+        <button class="btn btn-red" style="justify-content: center; font-size: 20px; min-height: 44px;" onclick="promptNuclearReset()">⚠️ RESET ALL PROGRESS</button>
     </div>
 
     <!-- CUSTOM OVERLAY POP-UPS -->
@@ -260,6 +263,18 @@
             <div class="btn-row" style="margin-bottom: 0;">
                 <button class="btn btn-half" style="justify-content: center;" onclick="closeConfirm(false)">CANCEL</button>
                 <button class="btn btn-half btn-green" style="justify-content: center;" onclick="closeConfirm(true)">LOCK IN</button>
+            </div>
+        </div>
+
+        <!-- NUCLEAR RESET CONFIRMATION -->
+        <div id="nuclear-box" class="modal-box" style="display: none; border-color: var(--accent-red);">
+            <div class="modal-msg" style="color: var(--accent-red);">⚠️ WARNING: NUCLEAR RESET</div>
+            <div style="font-size: 18px; color: #bbb; text-align: center; line-height: 1.2;">
+                THIS WILL PERMANENTLY WIPE ALL TOKENS, VAULT CASH, STREAKS, AND CUSTOM ROUTINES. THIS CANNOT BE UNDONE!
+            </div>
+            <div class="btn-row" style="margin-bottom: 0;">
+                <button class="btn btn-half" style="justify-content: center;" onclick="closeModal()">CANCEL</button>
+                <button class="btn btn-half btn-red" style="justify-content: center;" onclick="executeNuclearReset()">WIPE ALL</button>
             </div>
         </div>
 
@@ -290,6 +305,19 @@
     </div>
 
     <script>
+        // ================= DISCORD WEBHOOK CONFIG =================
+        const DISCORD_WEBHOOK_URL = ""; // <-- PASTE YOUR DISCORD WEBHOOK URL HERE
+        
+        function sendWebhook(message) {
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.trim() === "") return;
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: `🐱 **Gooba Tracker:** ${message}` })
+            }).catch(err => console.error("Webhook failed", err));
+        }
+        // ==========================================================
+
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx;
         function initAudio() { 
@@ -297,7 +325,6 @@
             if (audioCtx.state === 'suspended') audioCtx.resume(); 
         }
 
-        // Unlock audio on very first touch across the page
         window.addEventListener('touchstart', initAudio, { once: true });
         window.addEventListener('click', initAudio, { once: true });
         
@@ -327,7 +354,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 1.7,
+            version: 1.8,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -359,7 +386,6 @@
             if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
         }
 
-        // Robust ISO Midnight Reset Check
         const todayStr = getISODate();
         if (state.lastDate !== todayStr) {
             let yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
@@ -367,7 +393,9 @@
 
             if (state.lastDate === yesterdayStr && state.baselineMet) { 
                 state.streak += 1; 
+                sendWebhook(`🔥 Streak updated to **${state.streak} Days**!`);
             } else { 
+                if (state.streak > 0) sendWebhook(`💔 Streak reset! Missed baseline completion.`);
                 state.streak = 0; 
             }
             state.dailyRoutine.forEach(h => h.checked = false);
@@ -385,6 +413,7 @@
         function hideAllModals() {
             document.getElementById('alert-box').style.display = 'none';
             document.getElementById('confirm-box').style.display = 'none';
+            document.getElementById('nuclear-box').style.display = 'none';
             document.getElementById('prompt-box').style.display = 'none';
             document.getElementById('edit-routine-box').style.display = 'none';
         }
@@ -414,6 +443,22 @@
             closeModal();
             if (isConfirm && confirmCallback) confirmCallback();
             confirmCallback = null;
+        }
+
+        function promptNuclearReset() {
+            triggerHaptic(); hideAllModals();
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.getElementById('nuclear-box').style.display = 'flex';
+        }
+
+        function executeNuclearReset() {
+            triggerHaptic(); playBloop();
+            sendWebhook(`⚠️ **NUCLEAR RESET:** All progress and stats were wiped clean.`);
+            localStorage.removeItem('tokenApp');
+            state = { ...DEFAULT_STATE };
+            saveState();
+            closeModal();
+            customAlert("ALL PROGRESS HAS BEEN WIPED.");
         }
 
         function customPrompt(msg, callback) {
@@ -487,6 +532,7 @@
             document.getElementById('new-h-pay').value = '';
             
             evaluateBaseline(); saveState(); renderEditList();
+            sendWebhook(`⚙️ Added new routine: **[${icon}] ${name}** (+${payout.toFixed(2)} tokens)`);
         }
 
         function deleteHabit(index) {
@@ -498,6 +544,7 @@
             }
             state.dailyRoutine.splice(index, 1);
             evaluateBaseline(); saveState(); renderEditList();
+            sendWebhook(`⚙️ Deleted routine: **${habit.name}**`);
         }
 
         function updateUI() {
@@ -541,7 +588,6 @@
         }
 
         function saveState() { 
-            // Prevent floating-point precision drift
             state.tokens = Math.round(state.tokens * 100) / 100;
             state.vaultCash = Math.round(state.vaultCash * 100) / 100;
             localStorage.setItem('tokenApp', JSON.stringify(state)); 
@@ -573,6 +619,7 @@
                 state.todayLog.earned += habit.payout;
                 evaluateBaseline(); 
                 saveState();
+                sendWebhook(`✅ Completed: **${habit.name}** (+${habit.payout.toFixed(2)} tokens) | Balance: ${state.tokens.toFixed(2)} 🪙`);
             });
         }
 
@@ -590,6 +637,7 @@
                 state.tokens += 1.00;
                 state.todayLog.earned += 1.00;
                 saveState();
+                sendWebhook(`🏋️ Completed: **Lift Session** (+1.00 token) | Balance: ${state.tokens.toFixed(2)} 🪙`);
             });
         }
 
@@ -600,19 +648,22 @@
                 state.studyBlocks++; 
                 state.tokens += 1.50;
                 state.todayLog.earned += 1.50;
+                saveState();
+                sendWebhook(`💻 Logged **1 hr study block** (+1.50 tokens) | Total Hours: ${state.studyBlocks}`);
             } else if (delta < 0 && state.studyBlocks > 0) {
                 if (state.tokens >= 1.50) {
                     playBloop(); 
                     state.studyBlocks--; 
                     state.tokens -= 1.50;
                     state.todayLog.earned = Math.max(0, state.todayLog.earned - 1.50);
+                    saveState();
+                    sendWebhook(`↩️ Undid 1 hr study block | Total Hours: ${state.studyBlocks}`);
                 } else {
                     playBloop();
                     customAlert("CANNOT UNDO STUDY: TOKENS ALREADY SPENT!");
                     return;
                 }
             }
-            saveState();
         }
 
         function spendTokens(cost, name) {
@@ -622,6 +673,7 @@
                 state.tokens -= cost; 
                 state.todayLog.spent += cost;
                 saveState(); 
+                sendWebhook(`🛋️ Spent **${cost.toFixed(2)} tokens** on ${name} | Balance: ${state.tokens.toFixed(2)} 🪙`);
             } else { 
                 customAlert(`NOT ENOUGH TOKENS FOR ${name}!`); 
             }
@@ -635,6 +687,7 @@
                 state.vaultCash += 2.50; 
                 state.todayLog.banked += 2.50;
                 saveState();
+                sendWebhook(`💵 Banked 1.00 token ➔ **$2.50** added to Wardrobe Vault | Total Vault: $${state.vaultCash.toFixed(2)}`);
             } else { 
                 customAlert("NOT ENOUGH TOKENS TO BANK!"); 
             }
@@ -648,7 +701,10 @@
                 let amount = parseFloat(amountStr);
                 if (isNaN(amount) || amount <= 0) { customAlert("INVALID AMOUNT."); return; }
                 if (amount > state.vaultCash) { customAlert("NOT ENOUGH VAULT CASH!"); return; }
-                playBloop(); state.vaultCash -= amount; saveState();
+                playBloop(); 
+                state.vaultCash -= amount; 
+                saveState();
+                sendWebhook(`🛍️ Spent **$${amount.toFixed(2)}** from Vault cash | Remaining Vault: $${state.vaultCash.toFixed(2)}`);
             });
         }
 
@@ -677,7 +733,9 @@
                         }
                         state.habits = { gym: imported.habits?.gym || false };
                         if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
-                        evaluateBaseline(); saveState(); playDing(); customAlert("DATA RESTORED SUCCESSFULLY!");
+                        evaluateBaseline(); saveState(); playDing(); 
+                        customAlert("DATA RESTORED SUCCESSFULLY!");
+                        sendWebhook(`📥 Data successfully restored via import save.`);
                     } else { customAlert("INVALID BACKUP FILE."); }
                 } catch (err) { customAlert("ERROR READING FILE."); }
             };
