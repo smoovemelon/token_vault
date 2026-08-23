@@ -10,11 +10,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Toro Tracker</title>
     
-    <!-- FIXED MANIFEST SCOPE FOR GITHUB PAGES -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Toro Tracker","short_name":"Toro","start_url":"./","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><rect width=\"16\" height=\"16\" fill=\"white\"/><rect x=\"3\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"11\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"5\" y=\"5\" width=\"6\" height=\"1\" fill=\"black\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"13\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"3\" y=\"11\" width=\"10\" height=\"1\" fill=\"black\"/><rect x=\"4\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"10\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"7\" y=\"9\" width=\"2\" height=\"1\" fill=\"black\"/></svg>","sizes":"192x192 512x512","type":"image/svg+xml"}]}'>
-
-    <!-- INLINE PIXEL CAT ICON -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
+    <!-- STANDARD PHYSICAL FILE LINKS FOR PWA COMPLIANCE -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -370,7 +368,7 @@
 <body class="theme-light">
 
     <div class="container">
-        <!-- HEADER WITH RESTORED PIXEL CAT COMPANION -->
+        <!-- HEADER WITH COMPANION BOX -->
         <div class="header">
             <div class="header-left">
                 <h1>TORO TRACKER</h1>
@@ -658,7 +656,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 5.1,
+            version: 5.2,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
