@@ -22,7 +22,7 @@
             --radius-btn: 10px;
         }
 
-        /* CLASSIC 1-BIT THEMES */
+        /* CLASSIC 1-BIT THEMES WITH HIGH CONTRAST */
         body.theme-light {
             --bg-main: #ffffff;
             --bg-card: #000000;
@@ -38,13 +38,13 @@
         body.theme-dark {
             --bg-main: #121212;
             --bg-card: #1e1e1e;
-            --bg-subcard: #2d2d2d;
+            --bg-subcard: #282828;
             --bg-icon: #ffffff;
-            --bg-check-off: #3d3d3d;
+            --bg-check-off: #383838;
             --bg-check-on: #ffffff;
             --text-dark: #ffffff;
             --text-light: #ffffff;
-            --text-muted: #cccccc;
+            --text-muted: #d0d0d0; /* Increased contrast for dark mode abbreviations */
         }
 
         * {
@@ -74,32 +74,6 @@
             flex-direction: column;
             gap: 16px;
         }
-
-        /* PURE CSS PIXEL ICON SPRITES */
-        .pixel-icon {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            position: relative;
-            vertical-align: middle;
-            margin-right: 4px;
-        }
-        .px-gear::before { content: ''; position: absolute; width: 6px; height: 6px; border: 2px solid currentColor; top: 4px; left: 4px; }
-        .px-gear::after { content: ''; position: absolute; width: 2px; height: 10px; background: currentColor; top: 2px; left: 6px; }
-        .px-cart::before { content: ''; position: absolute; width: 10px; height: 6px; border-bottom: 2px solid currentColor; border-left: 2px solid currentColor; bottom: 2px; left: 2px; }
-        .px-cart::after { content: ''; position: absolute; width: 2px; height: 6px; background: currentColor; top: 2px; left: 4px; }
-        .px-info::before { content: ''; position: absolute; width: 2px; height: 2px; background: currentColor; top: 2px; left: 6px; }
-        .px-info::after { content: ''; position: absolute; width: 2px; height: 8px; background: currentColor; top: 5px; left: 6px; }
-        .px-palette::before { content: ''; position: absolute; width: 10px; height: 8px; border: 2px solid currentColor; border-radius: 4px; top: 3px; left: 2px; }
-        .px-sound::before { content: ''; position: absolute; width: 4px; height: 6px; background: currentColor; top: 4px; left: 2px; }
-        .px-sound::after { content: ''; position: absolute; width: 6px; height: 10px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; top: 2px; left: 6px; }
-        .px-link::before { content: ''; position: absolute; width: 8px; height: 4px; border: 2px solid currentColor; top: 5px; left: 3px; }
-        .px-export::before { content: ''; position: absolute; width: 8px; height: 10px; border: 2px solid currentColor; top: 2px; left: 4px; }
-        .px-export::after { content: ''; position: absolute; width: 4px; height: 2px; background: currentColor; top: 7px; left: 5px; }
-        .px-import::before { content: ''; position: absolute; width: 8px; height: 10px; border: 2px solid currentColor; top: 2px; left: 4px; }
-        .px-import::after { content: ''; position: absolute; width: 4px; height: 2px; background: currentColor; top: 3px; left: 5px; }
-        .px-warn::before { content: ''; position: absolute; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid currentColor; top: 1px; left: 0; }
-        .px-check::before { content: ''; position: absolute; width: 4px; height: 8px; border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); top: 2px; left: 5px; }
 
         /* Top Header & Companion Box */
         .header {
@@ -277,7 +251,7 @@
             justify-content: center;
             font-size: 20px;
             flex-shrink: 0;
-            font-weight: 500;
+            font-weight: bold; /* Restored bolder abbreviations */
             border: 2px solid currentColor;
         }
 
@@ -344,7 +318,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: bold;
         }
         
         .study-btn:active { opacity: 0.8; }
@@ -479,14 +453,14 @@
         <div class="card">
             <div class="stat-label" id="routine-title" style="margin-bottom: 2px;">DAILY ROUTINE</div>
             <div class="task-list" id="routine-container"></div>
-            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('routine')"><i class="pixel-icon px-gear"></i> EDIT ROUTINE</button>
+            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('routine')">⚙️ EDIT ROUTINE</button>
         </div>
 
         <!-- DYNAMIC FLEXIBLE ENGINE CARD -->
         <div class="card">
             <div class="stat-label" style="margin-bottom: 2px;">FLEXIBLE ENGINE</div>
             <div class="task-list" id="flexible-container"></div>
-            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('flexible')"><i class="pixel-icon px-gear"></i> EDIT FLEXIBLE</button>
+            <button class="btn" style="background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.3); font-size:16px; padding:6px; justify-content:center; margin-top:2px;" onclick="openEditRoutine('flexible')">⚙️ EDIT FLEXIBLE</button>
 
             <div style="margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px;">
                 <div class="task-details" style="margin-left: 0; margin-bottom: 8px;">
@@ -522,13 +496,13 @@
             </button>
             
             <button class="btn" style="justify-content: center; margin-bottom: 0;" onclick="spendVaultCash()">
-                <i class="pixel-icon px-cart"></i> SPEND VAULT CASH
+                🛒 SPEND VAULT CASH
             </button>
         </div>
 
         <!-- RULES & CONVERSIONS CARD -->
         <div class="card">
-            <div class="stat-label" style="margin-bottom: 2px;"><i class="pixel-icon px-info"></i> RULES & CONVERSIONS</div>
+            <div class="stat-label" style="margin-bottom: 2px;">ℹ️ RULES & CONVERSIONS</div>
             <div class="rules-box">
                 <div>• STUDY: <span>1 HR = +1.50 TOKENS</span></div>
                 <div>• BANKING: <span>1.00 TOKEN = $2.50 VAULT</span></div>
@@ -536,16 +510,16 @@
             </div>
         </div>
 
-        <!-- SETTINGS -->
+        <!-- SETTINGS WITH ORIGINAL RESET PLACEMENT -->
         <div class="settings-grid">
-            <div class="data-btn" onclick="toggleTheme()"><i class="pixel-icon px-palette"></i> THEME: <span id="theme-name">LIGHT</span></div>
-            <div class="data-btn" onclick="toggleSound()"><i class="pixel-icon px-sound"></i> SOUND: <span id="sound-status">ON</span></div>
-            <div class="data-btn" onclick="promptWebhookSetup()"><i class="pixel-icon px-link"></i> WEBHOOK</div>
-            <div class="data-btn" onclick="exportData()"><i class="pixel-icon px-export"></i> EXPORT</div>
-            <div class="data-btn" onclick="document.getElementById('import-file').click()"><i class="pixel-icon px-import"></i> IMPORT</div>
-            <div class="data-btn" onclick="promptNuclearReset()"><i class="pixel-icon px-warn" style="color:#ff8a8a;"></i> RESET</div>
+            <div class="data-btn" onclick="toggleTheme()">🎨 THEME: <span id="theme-name">LIGHT</span></div>
+            <div class="data-btn" onclick="document.getElementById('import-file').click()">📥 IMPORT SAVE</div>
+            <div class="data-btn" onclick="toggleSound()">🔊 SOUND: <span id="sound-status">ON</span></div>
+            <div class="data-btn" onclick="exportData()">📤 EXPORT SAVE</div>
+            <div class="data-btn" onclick="promptWebhookSetup()">⚙️ WEBHOOK</div>
             <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
         </div>
+        <button class="btn btn-red" style="justify-content: center; font-size: 18px; min-height: 40px;" onclick="promptNuclearReset()">⚠️ RESET ALL PROGRESS</button>
     </div>
 
     <!-- CUSTOM OVERLAY POP-UPS -->
@@ -572,9 +546,9 @@
             </div>
         </div>
 
-        <div id="nuclear-box" class="modal-box" style="display: none; border-color: #ff8a8a;">
-            <div class="modal-msg" style="color: #ff8a8a;">⚠️ WARNING: NUCLEAR RESET</div>
-            <div style="font-size: 16px; color: var(--text-muted); text-align: center; line-height: 1.2;">
+        <div id="nuclear-box" class="modal-box" style="display: none; border-color: #fff;">
+            <div class="modal-msg" style="color: #fff;">⚠️ WARNING: NUCLEAR RESET</div>
+            <div style="font-size: 16px; color: #aaa; text-align: center; line-height: 1.2;">
                 THIS WILL PERMANENTLY WIPE ALL TOKENS, VAULT CASH, STREAKS, AND CUSTOM ROUTINES. THIS CANNOT BE UNDONE!
             </div>
             <div class="btn-row" style="margin-bottom: 0;">
@@ -693,7 +667,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 4.6,
+            version: 4.7,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
