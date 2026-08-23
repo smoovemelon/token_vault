@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ffffff" id="meta-theme-color">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Toro Tracker">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Toro Tracker</title>
     
-    <!-- INLINE WEB APP MANIFEST TO REMOVE BROWSER BARS -->
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Toro Tracker","short_name":"Toro","start_url":".","display":"standalone","background_color":"#000000","theme_color":"#000000","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><rect width=\"16\" height=\"16\" fill=\"white\"/><rect x=\"3\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"11\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"5\" y=\"5\" width=\"6\" height=\"1\" fill=\"black\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"13\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"3\" y=\"11\" width=\"10\" height=\"1\" fill=\"black\"/><rect x=\"4\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"10\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"7\" y=\"9\" width=\"2\" height=\"1\" fill=\"black\"/></svg>","sizes":"192x192 512x512","type":"image/svg+xml"}]}'>
+    <!-- FIXED MANIFEST SCOPE FOR GITHUB PAGES -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Toro Tracker","short_name":"Toro","start_url":"./","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><rect width=\"16\" height=\"16\" fill=\"white\"/><rect x=\"3\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"11\" y=\"4\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"5\" y=\"5\" width=\"6\" height=\"1\" fill=\"black\"/><rect x=\"2\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"13\" y=\"6\" width=\"1\" height=\"5\" fill=\"black\"/><rect x=\"3\" y=\"11\" width=\"10\" height=\"1\" fill=\"black\"/><rect x=\"4\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"10\" y=\"7\" width=\"2\" height=\"2\" fill=\"black\"/><rect x=\"7\" y=\"9\" width=\"2\" height=\"1\" fill=\"black\"/></svg>","sizes":"192x192 512x512","type":"image/svg+xml"}]}'>
 
     <!-- INLINE PIXEL CAT ICON -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
@@ -25,7 +25,6 @@
             --radius-btn: 10px;
         }
 
-        /* CLASSIC 1-BIT THEMES WITH HARMONIOUS SYNCHRONIZATION */
         body.theme-light {
             --bg-main: #ffffff;
             --bg-card: #000000;
@@ -78,7 +77,6 @@
             gap: 16px;
         }
 
-        /* Top Header & Perfectly Synchronized Companion Box */
         .header {
             display: flex;
             justify-content: space-between;
@@ -129,23 +127,23 @@
         }
 
         .pixel-cat .ear-l, .pixel-cat .ear-r {
-            position: absolute; width: 4px; height: 4px; background: currentColor; top: 0;
+            position: absolute; width: 4px; height: 4px; background: #fff; top: 0;
         }
         .pixel-cat .ear-l { left: 2px; }
         .pixel-cat .ear-r { right: 2px; }
 
         .pixel-cat .face-base {
-            position: absolute; width: 14px; height: 12px; background: currentColor; top: 4px; left: 4px; border-radius: 2px;
+            position: absolute; width: 14px; height: 12px; background: #fff; top: 4px; left: 4px; border-radius: 2px;
         }
 
         .pixel-cat .eye-l, .pixel-cat .eye-r {
-            position: absolute; width: 2px; height: 2px; background: var(--bg-card); top: 7px;
+            position: absolute; width: 2px; height: 2px; background: #000; top: 7px;
         }
         .pixel-cat .eye-l { left: 6px; }
         .pixel-cat .eye-r { right: 6px; }
 
         .pixel-cat .nose {
-            position: absolute; width: 2px; height: 1px; background: #888; top: 10px; left: 10px;
+            position: absolute; width: 2px; height: 1px; background: #ff8a8a; top: 10px; left: 10px;
         }
 
         .companion-text {
@@ -158,7 +156,6 @@
         .companion-name { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
         .companion-status { font-size: 16px; color: var(--text-light); letter-spacing: 1px; }
 
-        /* Cards */
         .card {
             background-color: var(--bg-card);
             border-radius: var(--radius-card);
@@ -171,7 +168,6 @@
             border: 2px solid currentColor;
         }
 
-        /* Dashboard Stats Grid */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -216,7 +212,6 @@
         .log-label { font-size: 13px; color: var(--text-muted); }
         .log-val { font-size: 20px; margin-top: 2px; color: var(--text-light); }
 
-        /* Unified Active Session Widget */
         .timer-banner {
             background-color: var(--bg-subcard);
             border: 2px dashed #888;
@@ -229,7 +224,6 @@
         }
         .timer-display { font-size: 26px; letter-spacing: 2px; color: var(--text-light); }
 
-        /* Task Items */
         .task-list {
             display: flex;
             flex-direction: column;
@@ -276,7 +270,6 @@
             margin-top: 1px;
         }
 
-        /* Custom Checkbox Button */
         .task-check {
             width: 40px;
             height: 40px;
@@ -297,7 +290,6 @@
             border-color: #fff;
         }
 
-        /* Study Controls */
         .study-controls {
             display: flex;
             align-items: center;
@@ -333,7 +325,6 @@
             color: var(--text-light);
         }
 
-        /* Buttons & Tightened Spacing */
         .btn {
             background-color: var(--bg-subcard);
             color: var(--text-light);
@@ -365,11 +356,9 @@
         .data-btn { background: var(--bg-subcard); border: 2px solid #444; color: var(--text-muted); border-radius: var(--radius-btn); font-size: 16px; text-align: center; padding: 12px; cursor: pointer; font-family: 'VT323', monospace; }
         .data-btn:active { opacity: 0.8; }
 
-        /* ANIMATIONS */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes popIn { 0% { transform: scale(0.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* MODALS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; animation: fadeIn 0.1s ease-out; }
         .modal-box { background-color: var(--bg-card); border-radius: var(--radius-card); padding: 22px; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; box-shadow: 6px 6px 0px rgba(0,0,0,0.5); color: var(--text-light); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 2px solid currentColor; }
         .modal-msg { font-size: 22px; text-align: center; line-height: 1.2; letter-spacing: 1px; color: var(--text-light); }
@@ -381,7 +370,7 @@
 <body class="theme-light">
 
     <div class="container">
-        <!-- HEADER WITH SYNCHRONIZED COMPANION BOX -->
+        <!-- HEADER WITH RESTORED PIXEL CAT COMPANION -->
         <div class="header">
             <div class="header-left">
                 <h1>TORO TRACKER</h1>
@@ -669,7 +658,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 4.8,
+            version: 5.1,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -710,12 +699,14 @@
 
         document.body.className = "theme-" + state.theme;
         document.getElementById('theme-name').innerText = state.theme.toUpperCase();
+        document.getElementById('meta-theme-color').setAttribute('content', state.theme === 'dark' ? '#121212' : '#ffffff');
 
         function toggleTheme() {
             triggerHaptic();
             state.theme = state.theme === "light" ? "dark" : "light";
             document.body.className = "theme-" + state.theme;
             document.getElementById('theme-name').innerText = state.theme.toUpperCase();
+            document.getElementById('meta-theme-color').setAttribute('content', state.theme === 'dark' ? '#121212' : '#ffffff');
             saveState();
             playDing();
         }
@@ -1311,6 +1302,7 @@
                         if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
                         document.body.className = "theme-" + (state.theme || "light");
                         document.getElementById('theme-name').innerText = (state.theme || "light").toUpperCase();
+                        document.getElementById('meta-theme-color').setAttribute('content', state.theme === 'dark' ? '#121212' : '#ffffff');
                         evaluateBaseline(); saveState(); playDing(); 
                         customAlert("DATA RESTORED SUCCESSFULLY!");
                         sendWebhook("DATA RESTORED", `📥 Data successfully restored via import save.`);
