@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Gooba Tracker</title>
     
-    <!-- INLINE PIXEL CAT ICON (Black lines, White Background) -->
+    <!-- INLINE PIXEL CAT ICON -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
     
@@ -18,21 +18,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
-        /* HABIT PIXEL INSPIRED THEME */
         :root {
             --bg-main: #eef0f2;
             --bg-card: #1c1c1e;
             --bg-icon: #ffffff;
             --bg-check-off: #3a3a3c;
             --bg-check-on: #c5f0a4;
-            
             --text-dark: #1c1c1e;
             --text-light: #ffffff;
             --text-muted: #8e8e93;
-            
             --accent-blue: #90d4f7;
             --accent-red: #ff8a8a;
-            
             --radius-card: 24px;
             --radius-btn: 14px;
         }
@@ -64,26 +60,10 @@
             gap: 20px;
         }
 
-        /* Top Header */
-        .header {
-            text-align: left;
-            margin-bottom: 4px;
-        }
+        .header { text-align: left; margin-bottom: 4px; }
+        .header h1 { font-size: 42px; line-height: 0.9; color: var(--text-dark); letter-spacing: 1px; }
+        .header p { font-size: 22px; color: #666; margin-top: 4px; }
 
-        .header h1 {
-            font-size: 42px;
-            line-height: 0.9;
-            color: var(--text-dark);
-            letter-spacing: 1px;
-        }
-
-        .header p {
-            font-size: 22px;
-            color: #666;
-            margin-top: 4px;
-        }
-
-        /* Cards */
         .card {
             background-color: var(--bg-card);
             border-radius: var(--radius-card);
@@ -95,212 +75,51 @@
             box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         }
 
-        /* Dashboard Stats */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-box {
-            background-color: #2c2c2e;
-            border-radius: var(--radius-btn);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .streak-box {
-            grid-column: span 2;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stat-label {
-            font-size: 18px;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-        }
-
-        .stat-value {
-            font-size: 36px;
-            margin-top: 4px;
-        }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-box { background-color: #2c2c2e; border-radius: var(--radius-btn); padding: 16px; display: flex; flex-direction: column; justify-content: center; }
+        .streak-box { grid-column: span 2; flex-direction: row; justify-content: space-between; align-items: center; }
+        .stat-label { font-size: 18px; color: var(--text-muted); letter-spacing: 0.5px; }
+        .stat-value { font-size: 36px; margin-top: 4px; }
         
         .val-token { color: var(--accent-blue); }
         .val-vault { color: var(--bg-check-on); }
         .val-streak { color: #ffd60a; font-size: 28px; }
 
-        /* Task Items */
-        .task-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        .task-list { display: flex; flex-direction: column; gap: 16px; }
+        .task-item { display: flex; align-items: center; cursor: pointer; }
+        .task-icon { width: 44px; height: 44px; background-color: var(--bg-icon); color: var(--text-dark); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .task-details { flex-grow: 1; margin-left: 14px; display: flex; flex-direction: column; }
+        .task-title { font-size: 24px; letter-spacing: 0.5px; line-height:1.1; }
+        .task-subtitle { font-size: 18px; color: var(--text-muted); margin-top: 2px; }
 
-        .task-item {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
+        .task-check { width: 44px; height: 44px; background-color: var(--bg-check-off); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--text-dark); flex-shrink: 0; transition: background-color 0.1s; }
+        .task-check.checked { background-color: var(--bg-check-on); }
 
-        .task-icon {
-            width: 44px;
-            height: 44px;
-            background-color: var(--bg-icon);
-            color: var(--text-dark);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .task-details {
-            flex-grow: 1;
-            margin-left: 14px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .task-title {
-            font-size: 24px;
-            letter-spacing: 0.5px;
-        }
-
-        .task-subtitle {
-            font-size: 18px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* Custom Checkbox Button */
-        .task-check {
-            width: 44px;
-            height: 44px;
-            background-color: var(--bg-check-off);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: var(--text-dark);
-            flex-shrink: 0;
-            transition: background-color 0.1s;
-        }
-
-        .task-check.checked {
-            background-color: var(--bg-check-on);
-        }
-
-        /* Study Controls */
-        .study-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #2c2c2e;
-            border-radius: var(--radius-btn);
-            padding: 8px;
-        }
-
-        .study-btn {
-            width: 44px;
-            height: 44px;
-            background-color: var(--bg-icon);
-            color: var(--text-dark);
-            border: none;
-            border-radius: 10px;
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        
+        .study-controls { display: flex; align-items: center; justify-content: space-between; background-color: #2c2c2e; border-radius: var(--radius-btn); padding: 8px; }
+        .study-btn { width: 44px; height: 44px; background-color: var(--bg-icon); color: var(--text-dark); border: none; border-radius: 10px; font-size: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .study-btn:active { background-color: #d1d1d6; }
+        .study-display { font-size: 26px; text-align: center; flex-grow: 1; }
 
-        .study-display {
-            font-size: 26px;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        /* Buttons */
-        .btn {
-            background-color: #2c2c2e;
-            color: var(--text-light);
-            border: none;
-            padding: 16px;
-            border-radius: var(--radius-btn);
-            font-size: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            width: 100%;
-        }
-
+        .btn { background-color: #2c2c2e; color: var(--text-light); border: none; padding: 16px; border-radius: var(--radius-btn); font-size: 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; width: 100%; }
         .btn:active { background-color: #3a3a3c; }
         
         .btn-half { width: calc(50% - 6px); display: inline-flex; justify-content: center; }
         .btn-row { display: flex; gap: 12px; margin-bottom: 12px; }
-        
         .btn-green { background-color: var(--bg-check-on); color: var(--text-dark); }
         .btn-green:active { background-color: #aadb85; }
 
-        /* Settings */
-        .settings-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-        }
+        .settings-row { display: flex; justify-content: space-between; padding: 0 10px; }
+        .data-text { font-size: 20px; color: #888; cursor: pointer; padding: 10px; }
 
-        .data-text {
-            font-size: 20px;
-            color: #888;
-            cursor: pointer;
-            padding: 10px;
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* SMOOTH ANIMATIONS */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* CUSTOM MODAL POP-UPS */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 1000; padding: 20px;
-            animation: fadeIn 0.15s ease-out;
-        }
-        .modal-box {
-            background-color: var(--bg-card);
-            border-radius: var(--radius-card);
-            padding: 24px; width: 100%; max-width: 360px;
-            display: flex; flex-direction: column; gap: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            color: var(--text-light);
-            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; animation: fadeIn 0.15s ease-out; }
+        .modal-box { background-color: var(--bg-card); border-radius: var(--radius-card); padding: 24px; width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); color: var(--text-light); animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .modal-msg { font-size: 24px; text-align: center; line-height: 1.2; }
-        .modal-input {
-            width: 100%; padding: 16px; border-radius: var(--radius-btn);
-            background: #2c2c2e; border: 2px solid #3a3a3c; color: #fff;
-            font-size: 28px; text-align: center; outline: none;
-            font-family: 'VT323', monospace;
-        }
+        .modal-input { width: 100%; padding: 12px; border-radius: 10px; background: #2c2c2e; border: 2px solid #3a3a3c; color: #fff; font-size: 24px; text-align: center; outline: none; font-family: 'VT323', monospace; }
         .modal-input:focus { border-color: var(--accent-blue); }
-
+        .modal-list-item { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; padding: 12px; border-radius: 10px; font-size: 20px;}
     </style>
 </head>
 <body>
@@ -330,46 +149,13 @@
             </div>
         </div>
 
-        <!-- BASELINE CARD -->
+        <!-- DYNAMIC BASELINE CARD -->
         <div class="card">
-            <div class="stat-label" style="margin-bottom: 4px;">DAILY ROUTINE (1.25)</div>
-            <div class="task-list">
-                <div class="task-item" onclick="toggleHabit('medsDay', 0.25)">
-                    <div class="task-icon">MD</div>
-                    <div class="task-details">
-                        <div class="task-title">MEDS (DAY)</div>
-                        <div class="task-subtitle">+0.25 TOKENS</div>
-                    </div>
-                    <div class="task-check" id="chk-medsDay"></div>
-                </div>
-                
-                <div class="task-item" onclick="toggleHabit('shake', 0.50)">
-                    <div class="task-icon">SH</div>
-                    <div class="task-details">
-                        <div class="task-title">GOOBA SHAKE</div>
-                        <div class="task-subtitle">+0.50 TOKENS</div>
-                    </div>
-                    <div class="task-check" id="chk-shake"></div>
-                </div>
-
-                <div class="task-item" onclick="toggleHabit('reset', 0.25)">
-                    <div class="task-icon">RE</div>
-                    <div class="task-details">
-                        <div class="task-title">3-MIN RESET</div>
-                        <div class="task-subtitle">+0.25 TOKENS</div>
-                    </div>
-                    <div class="task-check" id="chk-reset"></div>
-                </div>
-
-                <div class="task-item" onclick="toggleHabit('medsNight', 0.25)">
-                    <div class="task-icon">MN</div>
-                    <div class="task-details">
-                        <div class="task-title">MEDS (NIGHT)</div>
-                        <div class="task-subtitle">+0.25 TOKENS</div>
-                    </div>
-                    <div class="task-check" id="chk-medsNight"></div>
-                </div>
+            <div class="stat-label" id="routine-title" style="margin-bottom: 4px;">DAILY ROUTINE</div>
+            <div class="task-list" id="routine-container">
+                <!-- Dynamically populated by JS -->
             </div>
+            <button class="btn" style="background:transparent; color:var(--accent-blue); font-size:18px; padding:8px; justify-content:center; margin-top:4px;" onclick="openEditRoutine()">⚙️ EDIT ROUTINE</button>
         </div>
 
         <!-- FLEXIBLE ENGINE CARD -->
@@ -408,13 +194,13 @@
                 <button class="btn btn-half" style="color: var(--accent-red);" onclick="spendTokens(1.00, '1H DOWNTIME')">1HR (-1.00)</button>
             </div>
             
-            <button class="btn btn-green" style="margin-bottom: 12px;" onclick="bankToVault()">
-                <span>BANK TO VAULT</span>
-                <span style="font-size: 20px;">-1.00 ➔ $2.5</span>
-            </button>
+            <div class="btn-row">
+                <button class="btn btn-half" style="color: var(--text-muted);" onclick="undoBankVault()">➖ UNDO BANK</button>
+                <button class="btn btn-half btn-green" onclick="bankToVault()">BANK (-1.00)</button>
+            </div>
             
-            <button class="btn" style="justify-content: center;" onclick="spendVaultCash()">
-                SPEND VAULT CASH
+            <button class="btn" style="justify-content: center; margin-bottom: 0;" onclick="spendVaultCash()">
+                🛒 SPEND VAULT CASH
             </button>
         </div>
 
@@ -428,11 +214,14 @@
 
     <!-- CUSTOM OVERLAY POP-UPS -->
     <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        
+        <!-- GENERIC ALERT -->
         <div id="alert-box" class="modal-box" style="display: none;">
             <div id="alert-msg" class="modal-msg"></div>
-            <button class="btn btn-green" style="justify-content: center;" onclick="closeAlert()">OK</button>
+            <button class="btn btn-green" style="justify-content: center;" onclick="closeModal()">OK</button>
         </div>
         
+        <!-- NUMBER PROMPT -->
         <div id="prompt-box" class="modal-box" style="display: none;">
             <div id="prompt-msg" class="modal-msg"></div>
             <input type="number" id="prompt-input" class="modal-input" placeholder="0.00" step="0.01">
@@ -441,299 +230,330 @@
                 <button class="btn btn-half btn-green" style="justify-content: center;" onclick="closePrompt(true)">CONFIRM</button>
             </div>
         </div>
+
+        <!-- EDIT ROUTINE MENU -->
+        <div id="edit-routine-box" class="modal-box" style="display: none;">
+            <div class="modal-msg" style="margin-bottom:0;">EDIT ROUTINE</div>
+            <div id="edit-list-container" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                <!-- Populated via JS -->
+            </div>
+            
+            <div style="border-top: 1px solid #3a3a3c; padding-top: 16px; display:flex; gap:8px;">
+                <input type="text" id="new-h-icon" class="modal-input" placeholder="IC" maxlength="2" style="width: 25%; padding:12px 4px;">
+                <input type="text" id="new-h-name" class="modal-input" placeholder="HABIT NAME" style="flex-grow:1; padding:12px 8px;">
+                <input type="number" id="new-h-pay" class="modal-input" placeholder="+0.25" step="0.05" style="width: 30%; padding:12px 4px;">
+            </div>
+            
+            <div class="btn-row" style="margin-bottom: 0;">
+                <button class="btn btn-half" style="justify-content: center;" onclick="closeModal()">DONE</button>
+                <button class="btn btn-half btn-green" style="justify-content: center;" onclick="addHabit()">ADD</button>
+            </div>
+        </div>
     </div>
 
     <script>
         // 8-BIT AUDIO SYNTHESIZER
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx;
-
-        function initAudio() {
-            if (!audioCtx) audioCtx = new AudioContext();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
-
+        function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+        
         function playDing() {
-            initAudio();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High pitch
+            initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
             osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime); // Low volume
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
         }
 
         function playBloop() {
-            initAudio();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(300, audioCtx.currentTime); // Low pitch
+            initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = 'square'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.15);
-            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15);
         }
 
-        // Haptic Feedback
-        function triggerHaptic() {
-            if (navigator.vibrate) navigator.vibrate(40); 
-        }
+        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(40); }
 
-        // Set Date
         const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
-        // Future-Proofing State Template
+        // DATA STATE & MIGRATION
         const DEFAULT_STATE = {
-            version: 1.0,
+            version: 1.1,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
             baselineMet: false,
             lastDate: new Date().toLocaleDateString(),
             studyBlocks: 0,
-            habits: { medsDay: false, shake: false, reset: false, medsNight: false, gym: false }
+            habits: { gym: false },
+            dailyRoutine: [
+                { id: 'h1', icon: 'MD', name: 'MEDS (DAY)', payout: 0.25, checked: false },
+                { id: 'h2', icon: 'SH', name: 'GOOBA SHAKE', payout: 0.50, checked: false },
+                { id: 'h3', icon: 'RE', name: '3-MIN RESET', payout: 0.25, checked: false },
+                { id: 'h4', icon: 'MN', name: 'MEDS (NIGHT)', payout: 0.25, checked: false }
+            ]
         };
 
-        // Load and Merge State
         let loadedState = JSON.parse(localStorage.getItem('tokenApp'));
         let state = { ...DEFAULT_STATE };
         if (loadedState) {
-            state = { 
-                ...DEFAULT_STATE, 
-                ...loadedState, 
-                habits: { ...DEFAULT_STATE.habits, ...(loadedState.habits || {}) } 
-            };
+            state = { ...DEFAULT_STATE, ...loadedState };
+            
+            // Migrate old fixed habits to dynamic array if importing old version
+            if (loadedState.habits && !loadedState.dailyRoutine) {
+                state.dailyRoutine = [];
+                if (loadedState.habits.medsDay !== undefined) state.dailyRoutine.push({ id: 'h1', icon: 'MD', name: 'MEDS (DAY)', payout: 0.25, checked: loadedState.habits.medsDay });
+                if (loadedState.habits.shake !== undefined) state.dailyRoutine.push({ id: 'h2', icon: 'SH', name: 'GOOBA SHAKE', payout: 0.50, checked: loadedState.habits.shake });
+                if (loadedState.habits.reset !== undefined) state.dailyRoutine.push({ id: 'h3', icon: 'RE', name: '3-MIN RESET', payout: 0.25, checked: loadedState.habits.reset });
+                if (loadedState.habits.medsNight !== undefined) state.dailyRoutine.push({ id: 'h4', icon: 'MN', name: 'MEDS (NIGHT)', payout: 0.25, checked: loadedState.habits.medsNight });
+            }
+            // Keep flexible engine isolated
+            state.habits = { gym: loadedState.habits?.gym || false };
         }
 
-        // Midnight Reset
+        // MIDNIGHT RESET
         const today = new Date().toLocaleDateString();
         if (state.lastDate !== today) {
-            let yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            
-            if (state.lastDate === yesterday.toLocaleDateString() && state.baselineMet) {
-                state.streak += 1;
-            } else {
-                state.streak = 0; 
-            }
-
-            state.habits = { medsDay: false, shake: false, reset: false, medsNight: false, gym: false };
+            let yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+            if (state.lastDate === yesterday.toLocaleDateString() && state.baselineMet) { state.streak += 1; } 
+            else { state.streak = 0; }
+            state.dailyRoutine.forEach(h => h.checked = false);
+            state.habits.gym = false;
             state.studyBlocks = 0;
             state.baselineMet = false;
             state.lastDate = today;
             saveState();
         }
 
-        // Custom Modal UI Logic
+        // MODAL LOGIC
         let promptCallback = null;
-
-        function customAlert(msg) {
+        function hideAllModals() {
+            document.getElementById('alert-box').style.display = 'none';
+            document.getElementById('prompt-box').style.display = 'none';
+            document.getElementById('edit-routine-box').style.display = 'none';
+        }
+        function closeModal() {
             triggerHaptic();
-            playBloop();
+            document.getElementById('modal-overlay').style.display = 'none';
+            hideAllModals();
+        }
+        function customAlert(msg) {
+            triggerHaptic(); playBloop();
+            hideAllModals();
             document.getElementById('alert-msg').innerText = msg;
             document.getElementById('modal-overlay').style.display = 'flex';
             document.getElementById('alert-box').style.display = 'flex';
-            document.getElementById('prompt-box').style.display = 'none';
         }
-
-        function closeAlert() {
-            triggerHaptic();
-            document.getElementById('modal-overlay').style.display = 'none';
-        }
-
         function customPrompt(msg, callback) {
-            triggerHaptic();
-            promptCallback = callback;
+            triggerHaptic(); promptCallback = callback; hideAllModals();
             document.getElementById('prompt-msg').innerText = msg;
             document.getElementById('prompt-input').value = '';
             document.getElementById('modal-overlay').style.display = 'flex';
-            document.getElementById('alert-box').style.display = 'none';
             document.getElementById('prompt-box').style.display = 'flex';
             document.getElementById('prompt-input').focus();
         }
-
         function closePrompt(isConfirm) {
-            triggerHaptic();
-            document.getElementById('modal-overlay').style.display = 'none';
-            if (isConfirm && promptCallback) {
-                promptCallback(document.getElementById('prompt-input').value);
-            }
+            closeModal();
+            if (isConfirm && promptCallback) promptCallback(document.getElementById('prompt-input').value);
             promptCallback = null;
         }
 
-        // Update UI Custom Checkboxes
-        function renderCheck(id, isChecked) {
-            const el = document.getElementById(id);
-            if (isChecked) {
-                el.classList.add('checked');
-                el.innerText = '✓';
-            } else {
-                el.classList.remove('checked');
-                el.innerText = '';
-            }
+        // DYNAMIC ROUTINE EDITING
+        function openEditRoutine() {
+            triggerHaptic(); hideAllModals();
+            renderEditList();
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.getElementById('edit-routine-box').style.display = 'flex';
         }
 
+        function renderEditList() {
+            const container = document.getElementById('edit-list-container');
+            container.innerHTML = '';
+            state.dailyRoutine.forEach((habit, index) => {
+                container.innerHTML += `
+                    <div class="modal-list-item">
+                        <span>[${habit.icon}] ${habit.name}</span>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <span style="color:var(--accent-blue);">+${habit.payout.toFixed(2)}</span>
+                            <button style="background:none; border:none; color:var(--accent-red); font-size:24px; cursor:pointer;" onclick="deleteHabit(${index})">❌</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function addHabit() {
+            triggerHaptic();
+            const icon = document.getElementById('new-h-icon').value.trim() || 'XX';
+            const name = document.getElementById('new-h-name').value.trim() || 'NEW HABIT';
+            const payStr = document.getElementById('new-h-pay').value;
+            const payout = parseFloat(payStr) || 0;
+            
+            state.dailyRoutine.push({ id: 'h' + Date.now(), icon: icon.substring(0,2), name: name, payout: payout, checked: false });
+            
+            document.getElementById('new-h-icon').value = '';
+            document.getElementById('new-h-name').value = '';
+            document.getElementById('new-h-pay').value = '';
+            
+            evaluateBaseline(); saveState(); renderEditList();
+        }
+
+        function deleteHabit(index) {
+            triggerHaptic();
+            const habit = state.dailyRoutine[index];
+            if (habit.checked) {
+                state.tokens = Math.max(0, state.tokens - habit.payout); // Prevent token farming
+            }
+            state.dailyRoutine.splice(index, 1);
+            evaluateBaseline(); saveState(); renderEditList();
+        }
+
+        // DOM RENDERING
         function updateUI() {
             document.getElementById('token-display').innerText = Math.max(0, state.tokens).toFixed(2);
             document.getElementById('vault-display').innerText = "$" + state.vaultCash.toFixed(2);
             document.getElementById('streak-display').innerText = state.streak;
             
-            renderCheck('chk-medsDay', state.habits.medsDay);
-            renderCheck('chk-shake', state.habits.shake);
-            renderCheck('chk-reset', state.habits.reset);
-            renderCheck('chk-medsNight', state.habits.medsNight);
-            renderCheck('chk-gym', state.habits.gym);
+            // Build Dynamic Routine UI
+            const routineContainer = document.getElementById('routine-container');
+            routineContainer.innerHTML = '';
+            let totalRoutinePayout = 0;
+            
+            state.dailyRoutine.forEach((habit, i) => {
+                totalRoutinePayout += habit.payout;
+                const checkClass = habit.checked ? 'task-check checked' : 'task-check';
+                const checkText = habit.checked ? '✓' : '';
+                routineContainer.innerHTML += `
+                    <div class="task-item" onclick="toggleRoutineHabit(${i})">
+                        <div class="task-icon">${habit.icon}</div>
+                        <div class="task-details">
+                            <div class="task-title">${habit.name}</div>
+                            <div class="task-subtitle">+${habit.payout.toFixed(2)} TOKENS</div>
+                        </div>
+                        <div class="${checkClass}">${checkText}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('routine-title').innerText = `DAILY ROUTINE (${totalRoutinePayout.toFixed(2)})`;
+
+            // Flexible Engine (Hardcoded logic remains unchanged)
+            const elGym = document.getElementById('chk-gym');
+            if (state.habits.gym) { elGym.classList.add('checked'); elGym.innerText = '✓'; } 
+            else { elGym.classList.remove('checked'); elGym.innerText = ''; }
 
             const studyHours = state.studyBlocks || 0;
             document.getElementById('study-count').innerText = studyHours;
             document.getElementById('study-payout').innerText = "+" + (studyHours * 1.50).toFixed(2) + " TOKENS";
         }
 
-        function saveState() {
-            localStorage.setItem('tokenApp', JSON.stringify(state));
-            updateUI();
-        }
+        function saveState() { localStorage.setItem('tokenApp', JSON.stringify(state)); updateUI(); }
 
-        // Baseline Logic
-        function toggleHabit(key, value) {
-            triggerHaptic();
-            state.habits[key] = !state.habits[key];
-            const isChecked = state.habits[key];
-            
-            if (isChecked) playDing(); else playBloop();
-            
-            state.tokens = isChecked ? state.tokens + value : Math.max(0, state.tokens - value);
-            
-            if (state.habits.medsDay && state.habits.shake && state.habits.reset && state.habits.medsNight) {
-                state.baselineMet = true;
-            } else {
+        // CORE LOGIC
+        function evaluateBaseline() {
+            if (state.dailyRoutine.length === 0) {
                 state.baselineMet = false;
+            } else {
+                state.baselineMet = state.dailyRoutine.every(h => h.checked);
             }
-            saveState();
         }
 
-        // Gym Logic
+        function toggleRoutineHabit(index) {
+            triggerHaptic();
+            const habit = state.dailyRoutine[index];
+            habit.checked = !habit.checked;
+            
+            if (habit.checked) playDing(); else playBloop();
+            
+            state.tokens = habit.checked ? state.tokens + habit.payout : Math.max(0, state.tokens - habit.payout);
+            evaluateBaseline(); saveState();
+        }
+
         function toggleGym() {
             triggerHaptic();
             state.habits.gym = !state.habits.gym;
-            const isChecked = state.habits.gym;
-            
-            if (isChecked) playDing(); else playBloop();
-
-            state.tokens = isChecked ? state.tokens + 1.00 : Math.max(0, state.tokens - 1.00);
+            if (state.habits.gym) playDing(); else playBloop();
+            state.tokens = state.habits.gym ? state.tokens + 1.00 : Math.max(0, state.tokens - 1.00);
             saveState();
         }
 
-        // Study Logic
         function adjustStudy(delta) {
             triggerHaptic();
             if (delta > 0) {
-                playDing();
-                state.studyBlocks++;
-                state.tokens += 1.50;
+                playDing(); state.studyBlocks++; state.tokens += 1.50;
             } else if (delta < 0 && state.studyBlocks > 0) {
-                playBloop();
-                state.studyBlocks--;
-                state.tokens = Math.max(0, state.tokens - 1.50);
+                playBloop(); state.studyBlocks--; state.tokens = Math.max(0, state.tokens - 1.50);
             }
             saveState();
         }
 
-        // Spend Tokens
         function spendTokens(cost, name) {
             triggerHaptic();
-            if (state.tokens >= cost) {
-                playBloop();
-                state.tokens -= cost;
-                saveState();
-            } else {
-                customAlert(`NOT ENOUGH TOKENS FOR ${name}!`);
-            }
+            if (state.tokens >= cost) { playBloop(); state.tokens -= cost; saveState(); } 
+            else { customAlert(`NOT ENOUGH TOKENS FOR ${name}!`); }
         }
 
         function bankToVault() {
             triggerHaptic();
             if (state.tokens >= 1.00) {
-                playDing();
-                state.tokens -= 1.00;
-                state.vaultCash += 2.50;
+                playDing(); state.tokens -= 1.00; state.vaultCash += 2.50; saveState();
+            } else { customAlert("NOT ENOUGH TOKENS TO BANK!"); }
+        }
+
+        // NEW: Undo Bank to Vault
+        function undoBankVault() {
+            triggerHaptic();
+            if (state.vaultCash >= 2.50) {
+                playBloop();
+                state.vaultCash -= 2.50;
+                state.tokens += 1.00;
                 saveState();
             } else {
-                customAlert("NOT ENOUGH TOKENS TO BANK!");
+                customAlert("NOT ENOUGH CASH IN VAULT TO UNDO!");
             }
         }
 
-        // Spend Real Cash
         function spendVaultCash() {
             triggerHaptic();
-            if (state.vaultCash <= 0) {
-                customAlert("VAULT IS EMPTY!");
-                return;
-            }
-            
+            if (state.vaultCash <= 0) { customAlert("VAULT IS EMPTY!"); return; }
             customPrompt(`HOW MUCH DID YOU SPEND?\n(MAX: $${state.vaultCash.toFixed(2)})`, function(amountStr) {
                 if (!amountStr) return;
                 let amount = parseFloat(amountStr);
-                if (isNaN(amount) || amount <= 0) {
-                    customAlert("INVALID AMOUNT."); 
-                    return;
-                }
-                if (amount > state.vaultCash) {
-                    customAlert("NOT ENOUGH VAULT CASH!"); 
-                    return;
-                }
-                playBloop();
-                state.vaultCash -= amount;
-                saveState();
+                if (isNaN(amount) || amount <= 0) { customAlert("INVALID AMOUNT."); return; }
+                if (amount > state.vaultCash) { customAlert("NOT ENOUGH VAULT CASH!"); return; }
+                playBloop(); state.vaultCash -= amount; saveState();
             });
         }
 
-        // Data Management
         function exportData() {
-            triggerHaptic();
-            playDing();
+            triggerHaptic(); playDing();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-            const dlNode = document.createElement('a');
-            dlNode.setAttribute("href", dataStr);
+            const dlNode = document.createElement('a'); dlNode.setAttribute("href", dataStr);
             dlNode.setAttribute("download", `gooba_tracker_backup_${today.replace(/\//g, '-')}.json`);
-            document.body.appendChild(dlNode); 
-            dlNode.click();
-            dlNode.remove();
+            document.body.appendChild(dlNode); dlNode.click(); dlNode.remove();
         }
 
         function importData(event) {
-            triggerHaptic();
-            const file = event.target.files[0];
-            if (!file) return;
+            triggerHaptic(); const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const imported = JSON.parse(e.target.result);
                     if (imported.tokens !== undefined) {
-                        state = { 
-                            ...DEFAULT_STATE, 
-                            ...imported, 
-                            habits: { ...DEFAULT_STATE.habits, ...(imported.habits || {}) } 
-                        };
-                        saveState();
-                        playDing();
-                        customAlert("DATA RESTORED SUCCESSFULLY!");
-                    } else {
-                        customAlert("INVALID BACKUP FILE.");
-                    }
-                } catch (err) { 
-                    customAlert("ERROR READING FILE."); 
-                }
+                        state = { ...DEFAULT_STATE, ...imported };
+                        // Migration logic for importing older save files safely
+                        if (imported.habits && !imported.dailyRoutine) {
+                            state.dailyRoutine = [];
+                            if (imported.habits.medsDay !== undefined) state.dailyRoutine.push({ id: 'h1', icon: 'MD', name: 'MEDS (DAY)', payout: 0.25, checked: imported.habits.medsDay });
+                            if (imported.habits.shake !== undefined) state.dailyRoutine.push({ id: 'h2', icon: 'SH', name: 'GOOBA SHAKE', payout: 0.50, checked: imported.habits.shake });
+                            if (imported.habits.reset !== undefined) state.dailyRoutine.push({ id: 'h3', icon: 'RE', name: '3-MIN RESET', payout: 0.25, checked: imported.habits.reset });
+                            if (imported.habits.medsNight !== undefined) state.dailyRoutine.push({ id: 'h4', icon: 'MN', name: 'MEDS (NIGHT)', payout: 0.25, checked: imported.habits.medsNight });
+                        }
+                        state.habits = { gym: imported.habits?.gym || false };
+                        evaluateBaseline(); saveState(); playDing(); customAlert("DATA RESTORED SUCCESSFULLY!");
+                    } else { customAlert("INVALID BACKUP FILE."); }
+                } catch (err) { customAlert("ERROR READING FILE."); }
             };
             reader.readAsText(file);
         }
