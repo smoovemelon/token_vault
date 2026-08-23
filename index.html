@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Toro Tracker</title>
     
-    <!-- INLINE PIXEL CAT ICON (Black lines, White Background) -->
+    <!-- INLINE PIXEL CAT ICON -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
     
@@ -140,6 +140,19 @@
         .log-box { background-color: var(--bg-subcard); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; justify-content: center; border: 1px solid #333; }
         .log-label { font-size: 13px; color: var(--text-muted); }
         .log-val { font-size: 20px; margin-top: 2px; color: #fff; }
+
+        /* Timer Widget */
+        .timer-banner {
+            background-color: #1a1a1a;
+            border: 2px dashed #666;
+            border-radius: var(--radius-btn);
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+        }
+        .timer-display { font-size: 28px; letter-spacing: 2px; color: #fff; }
 
         /* Task Items */
         .task-list {
@@ -313,6 +326,17 @@
                 </div>
             </div>
 
+            <!-- LIVE DOWNTIME TIMER WIDGET (HIDDEN UNTIL ACTIVE) -->
+            <div id="timer-card-wrapper" style="display: none;">
+                <div class="timer-banner">
+                    <div>
+                        <span class="stat-label" style="display:block; font-size:12px;">⏳ DOWNTIME BREAK ACTIVE</span>
+                        <span class="timer-display" id="timer-countdown">30:00</span>
+                    </div>
+                    <button class="btn btn-red" style="padding: 8px 14px; font-size:16px; margin-bottom:0;" onclick="cancelDowntimeTimer()">STOP</button>
+                </div>
+            </div>
+
             <!-- TODAY'S ACTIVITY LOG -->
             <div style="border-top: 1px dashed #333; padding-top: 10px;">
                 <span class="stat-label" style="display:block; margin-bottom:6px;">📅 TODAY'S LEDGER</span>
@@ -323,7 +347,7 @@
                     </div>
                     <div class="log-box">
                         <span class="log-label">SPENT</span>
-                        <span class="log-val" id="log-spent">-0.00</span>
+                        <span class="log-val" style="color:#ff8a8a;" id="log-spent">-0.00</span>
                     </div>
                     <div class="log-box">
                         <span class="log-label">BANKED</span>
@@ -364,8 +388,8 @@
             <div class="stat-label" style="margin-bottom: 2px;">SPEND & REDEEM</div>
             
             <div class="btn-row">
-                <button class="btn btn-half" onclick="spendTokens(0.50, '30M DOWNTIME')">30M (-0.50)</button>
-                <button class="btn btn-half" onclick="spendTokens(1.00, '1H DOWNTIME')">1HR (-1.00)</button>
+                <button class="btn btn-half" onclick="promptSpendTokens(0.50, 30, '30M DOWNTIME')">30M (-0.50)</button>
+                <button class="btn btn-half" onclick="promptSpendTokens(1.00, 60, '1H DOWNTIME')">1HR (-1.00)</button>
             </div>
             
             <button class="btn btn-green" style="margin-bottom: 10px;" onclick="bankToVault()">
@@ -411,6 +435,15 @@
             <div class="btn-row" style="margin-bottom: 0;">
                 <button class="btn btn-half" style="justify-content: center;" onclick="closeConfirm(false)">CANCEL</button>
                 <button class="btn btn-half btn-green" style="justify-content: center;" onclick="closeConfirm(true)">LOCK IN</button>
+            </div>
+        </div>
+
+        <!-- DOWNTIME TIMER START CONFIRMATION -->
+        <div id="timer-prompt-box" class="modal-box" style="display: none; border-color: #fff;">
+            <div class="modal-msg" id="timer-prompt-msg">START DOWNTIME TIMER NOW?</div>
+            <div class="btn-row" style="margin-bottom: 0;">
+                <button class="btn btn-half" style="justify-content: center;" onclick="executeSpendTokens(false)">JUST SPEND</button>
+                <button class="btn btn-half btn-green" style="justify-content: center;" onclick="executeSpendTokens(true)">START TIMER</button>
             </div>
         </div>
 
@@ -487,7 +520,19 @@
             osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15);
         }
 
-        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(40); }
+        function playAlarmBeeps() {
+            initAudio();
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+                    osc.type = 'square'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+                }, i * 250);
+            }
+        }
+
+        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate([100, 50, 100]); }
 
         const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
@@ -497,7 +542,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 3.1,
+            version: 3.4,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -505,6 +550,8 @@
             lastDate: getISODate(),
             studyBlocks: 0,
             webhookUrl: "",
+            timerEndTime: null,
+            timerMinutesTotal: 0,
             dailyRoutine: [
                 { id: 'h1', icon: 'MD', name: 'MEDS (DAY)', payout: 0.25, checked: false },
                 { id: 'h2', icon: 'SH', name: 'GOOBA SHAKE', payout: 0.50, checked: false },
@@ -535,7 +582,11 @@
             if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
         }
 
-        // Aesthetically Pleasing Discord Pixel Embeds
+        let pendingSpendCost = 0;
+        let pendingSpendMins = 0;
+        let pendingSpendName = "";
+        let countdownInterval = null;
+
         function sendWebhook(title, description, color = 16777215) {
             if (!state.webhookUrl || state.webhookUrl.trim() === "") return;
             
@@ -543,7 +594,7 @@
                 embeds: [{
                     title: `🐾 TORO TRACKER // ${title}`,
                     description: description,
-                    color: color, // 16777215 = White in decimal (1-bit retro look)
+                    color: color,
                     footer: {
                         text: `TOKENS: ${state.tokens.toFixed(2)} 🪙 | VAULT: $${state.vaultCash.toFixed(2)} 💵`
                     },
@@ -576,6 +627,7 @@
             state.baselineMet = false;
             state.lastDate = todayStr;
             state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
+            state.timerEndTime = null;
             saveState();
         }
 
@@ -589,6 +641,7 @@
             document.getElementById('nuclear-box').style.display = 'none';
             document.getElementById('prompt-box').style.display = 'none';
             document.getElementById('text-prompt-box').style.display = 'none';
+            document.getElementById('timer-prompt-box').style.display = 'none';
             document.getElementById('edit-routine-box').style.display = 'none';
         }
 
@@ -669,6 +722,80 @@
             closeModal();
             if (isConfirm && promptCallback) promptCallback(document.getElementById('prompt-input').value);
             promptCallback = null;
+        }
+
+        // Downtime Timer Flow
+        function promptSpendTokens(cost, minutes, name) {
+            triggerHaptic();
+            if (state.tokens < cost) {
+                customAlert(`NOT ENOUGH TOKENS FOR ${name}!`);
+                return;
+            }
+            pendingSpendCost = cost;
+            pendingSpendMins = minutes;
+            pendingSpendName = name;
+
+            hideAllModals();
+            document.getElementById('timer-prompt-msg').innerText = `REDEEM ${name} FOR -${cost.toFixed(2)} TOKENS?\nSTART TIMER NOW?`;
+            document.getElementById('modal-overlay').style.display = 'flex';
+            document.getElementById('timer-prompt-box').style.display = 'flex';
+        }
+
+        function executeSpendTokens(startTimer) {
+            closeModal();
+            playBloop();
+            state.tokens -= pendingSpendCost;
+            state.todayLog.spent += pendingSpendCost;
+
+            if (startTimer) {
+                const now = Date.now();
+                state.timerEndTime = now + (pendingSpendMins * 60 * 1000);
+                startCountdownEngine();
+                sendWebhook("DOWNTIME REDEEMED", `🛋️ Spent **${pendingSpendCost.toFixed(2)} tokens** on ${pendingSpendName} | **${pendingSpendMins}m Timer Started** ⏱️`);
+            } else {
+                sendWebhook("DOWNTIME REDEEMED", `🛋️ Spent **${pendingSpendCost.toFixed(2)} tokens** on ${pendingSpendName}`);
+            }
+            saveState();
+        }
+
+        function cancelDowntimeTimer() {
+            triggerHaptic();
+            state.timerEndTime = null;
+            if (countdownInterval) clearInterval(countdownInterval);
+            saveState();
+            document.getElementById('timer-card-wrapper').style.display = 'none';
+        }
+
+        function startCountdownEngine() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            document.getElementById('timer-card-wrapper').style.display = 'block';
+
+            countdownInterval = setInterval(() => {
+                if (!state.timerEndTime) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('timer-card-wrapper').style.display = 'none';
+                    return;
+                }
+
+                const remaining = state.timerEndTime - Date.now();
+                if (remaining <= 0) {
+                    clearInterval(countdownInterval);
+                    state.timerEndTime = null;
+                    saveState();
+                    document.getElementById('timer-card-wrapper').style.display = 'none';
+                    
+                    playAlarmBeeps();
+                    triggerHaptic();
+                    sendWebhook("DOWNTIME ENDED", "🚨 **Downtime session has expired!** Time to get back to work! ⚡");
+                    customAlert("🚨 DOWNTIME BREAK OVER! GET BACK TO WORK!");
+                } else {
+                    const totalSecs = Math.floor(remaining / 1000);
+                    const mins = Math.floor(totalSecs / 60);
+                    const secs = totalSecs % 60;
+                    document.getElementById('timer-countdown').innerText = 
+                        String(mins).padStart(2, '0') + ":" + String(secs).padStart(2, '0');
+                }
+            }, 1000);
         }
 
         function openEditRoutine(mode) {
@@ -880,19 +1007,6 @@
             }
         }
 
-        function spendTokens(cost, name) {
-            triggerHaptic();
-            if (state.tokens >= cost) { 
-                playBloop(); 
-                state.tokens -= cost; 
-                state.todayLog.spent += cost;
-                saveState(); 
-                sendWebhook("DOWNTIME REDEEMED", `🛋️ Spent **${cost.toFixed(2)} tokens** on ${name}`);
-            } else { 
-                customAlert(`NOT ENOUGH TOKENS FOR ${name}!`); 
-            }
-        }
-
         function bankToVault() {
             triggerHaptic();
             if (state.tokens >= 1.00) {
@@ -950,6 +1064,9 @@
         }
 
         updateUI();
+        if (state.timerEndTime && state.timerEndTime > Date.now()) {
+            startCountdownEngine();
+        }
     </script>
 </body>
 </html>
