@@ -22,7 +22,7 @@
             --radius-btn: 10px;
         }
 
-        /* CLASSIC 1-BIT THEMES WITH HIGH CONTRAST */
+        /* CLASSIC 1-BIT THEMES WITH HARMONIOUS SYNCHRONIZATION */
         body.theme-light {
             --bg-main: #ffffff;
             --bg-card: #000000;
@@ -44,7 +44,7 @@
             --bg-check-on: #ffffff;
             --text-dark: #ffffff;
             --text-light: #ffffff;
-            --text-muted: #d0d0d0; /* Increased contrast for dark mode abbreviations */
+            --text-muted: #d0d0d0;
         }
 
         * {
@@ -75,13 +75,13 @@
             gap: 16px;
         }
 
-        /* Top Header & Companion Box */
+        /* Top Header & Perfectly Synchronized Companion Box */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 3px solid currentColor;
-            padding-bottom: 10px;
+            padding-bottom: 12px;
             margin-bottom: 2px;
         }
 
@@ -107,9 +107,8 @@
             align-items: center;
             gap: 10px;
             color: var(--text-light);
-            box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
             height: 52px;
-            margin-top: 4px;
         }
 
         @keyframes catBreathe {
@@ -153,7 +152,7 @@
             line-height: 1.1;
         }
 
-        .companion-name { font-size: 14px; color: var(--text-muted); letter-spacing: 1px; }
+        .companion-name { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
         .companion-status { font-size: 16px; color: var(--text-light); letter-spacing: 1px; }
 
         /* Cards */
@@ -251,7 +250,7 @@
             justify-content: center;
             font-size: 20px;
             flex-shrink: 0;
-            font-weight: bold; /* Restored bolder abbreviations */
+            font-weight: bold;
             border: 2px solid currentColor;
         }
 
@@ -379,7 +378,7 @@
 <body class="theme-light">
 
     <div class="container">
-        <!-- HEADER WITH CENTERED PIXEL CAT COMPANION -->
+        <!-- HEADER WITH SYNCHRONIZED COMPANION BOX -->
         <div class="header">
             <div class="header-left">
                 <h1>TORO TRACKER</h1>
@@ -396,7 +395,7 @@
                 </div>
                 <div class="companion-text">
                     <span class="companion-name">TORO</span>
-                    <span class="companion-status" id="companion-mood">CHILLING</span>
+                    <span class="companion-status" id="companion-mood">WAITING</span>
                 </div>
             </div>
         </div>
@@ -481,7 +480,7 @@
             </div>
         </div>
 
-        <!-- SPEND & REDEEM CARD (TIGHTENED SPACING) -->
+        <!-- SPEND & REDEEM CARD -->
         <div class="card" style="gap: 8px;">
             <div class="stat-label" style="margin-bottom: 0px;">SPEND & REDEEM</div>
             
@@ -510,7 +509,7 @@
             </div>
         </div>
 
-        <!-- SETTINGS WITH ORIGINAL RESET PLACEMENT -->
+        <!-- SETTINGS -->
         <div class="settings-grid">
             <div class="data-btn" onclick="toggleTheme()">🎨 THEME: <span id="theme-name">LIGHT</span></div>
             <div class="data-btn" onclick="document.getElementById('import-file').click()">📥 IMPORT SAVE</div>
@@ -667,7 +666,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 4.7,
+            version: 4.8,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
