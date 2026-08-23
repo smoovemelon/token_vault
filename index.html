@@ -292,7 +292,14 @@
     <script>
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         let audioCtx;
-        function initAudio() { if (!audioCtx) audioCtx = new AudioContext(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+        function initAudio() { 
+            if (!audioCtx) audioCtx = new AudioContext(); 
+            if (audioCtx.state === 'suspended') audioCtx.resume(); 
+        }
+
+        // Unlock audio on very first touch across the page
+        window.addEventListener('touchstart', initAudio, { once: true });
+        window.addEventListener('click', initAudio, { once: true });
         
         function playDing() {
             initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
@@ -315,13 +322,17 @@
         const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
 
+        function getISODate(d = new Date()) {
+            return d.toISOString().split('T')[0];
+        }
+
         const DEFAULT_STATE = {
-            version: 1.6,
+            version: 1.7,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
             baselineMet: false,
-            lastDate: new Date().toLocaleDateString(),
+            lastDate: getISODate(),
             studyBlocks: 0,
             habits: { gym: false },
             dailyRoutine: [
@@ -348,17 +359,23 @@
             if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
         }
 
-        const today = new Date().toLocaleDateString();
-        if (state.lastDate !== today) {
+        // Robust ISO Midnight Reset Check
+        const todayStr = getISODate();
+        if (state.lastDate !== todayStr) {
             let yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
-            if (state.lastDate === yesterday.toLocaleDateString() && state.baselineMet) { state.streak += 1; } 
-            else { state.streak = 0; }
+            let yesterdayStr = getISODate(yesterday);
+
+            if (state.lastDate === yesterdayStr && state.baselineMet) { 
+                state.streak += 1; 
+            } else { 
+                state.streak = 0; 
+            }
             state.dailyRoutine.forEach(h => h.checked = false);
             state.habits.gym = false;
             state.studyBlocks = 0;
             state.baselineMet = false;
-            state.lastDate = today;
-            state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 }; // Reset daily ledger at midnight
+            state.lastDate = todayStr;
+            state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
             saveState();
         }
 
@@ -463,7 +480,7 @@
             const name = document.getElementById('new-h-name').value.trim() || 'NEW HABIT';
             const payout = parseFloat(document.getElementById('new-h-pay').value) || 0;
             
-            state.dailyRoutine.push({ id: 'h' + Date.now(), icon: icon.substring(0,2), name: name, payout: payout, checked: false });
+            state.dailyRoutine.push({ id: 'h' + Date.now(), icon: icon.substring(0,2), name: name, payout: Math.round(payout * 100) / 100, checked: false });
             
             document.getElementById('new-h-icon').value = '';
             document.getElementById('new-h-name').value = '';
@@ -488,7 +505,6 @@
             document.getElementById('vault-display').innerText = "$" + state.vaultCash.toFixed(2);
             document.getElementById('streak-display').innerText = state.streak;
             
-            // Render Today's Ledger
             document.getElementById('log-earned').innerText = "+" + (state.todayLog?.earned || 0).toFixed(2);
             document.getElementById('log-spent').innerText = "-" + (state.todayLog?.spent || 0).toFixed(2);
             document.getElementById('log-banked').innerText = "$" + (state.todayLog?.banked || 0).toFixed(2);
@@ -524,7 +540,13 @@
             document.getElementById('study-payout').innerText = "+" + (studyHours * 1.50).toFixed(2) + " TOKENS";
         }
 
-        function saveState() { localStorage.setItem('tokenApp', JSON.stringify(state)); updateUI(); }
+        function saveState() { 
+            // Prevent floating-point precision drift
+            state.tokens = Math.round(state.tokens * 100) / 100;
+            state.vaultCash = Math.round(state.vaultCash * 100) / 100;
+            localStorage.setItem('tokenApp', JSON.stringify(state)); 
+            updateUI(); 
+        }
 
         function evaluateBaseline() {
             if (state.dailyRoutine.length === 0) {
@@ -634,7 +656,7 @@
             triggerHaptic(); playDing();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const dlNode = document.createElement('a'); dlNode.setAttribute("href", dataStr);
-            dlNode.setAttribute("download", `gooba_tracker_backup_${today.replace(/\//g, '-')}.json`);
+            dlNode.setAttribute("download", `gooba_tracker_backup_${todayStr}.json`);
             document.body.appendChild(dlNode); dlNode.click(); dlNode.remove();
         }
 
