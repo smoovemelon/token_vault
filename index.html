@@ -417,7 +417,8 @@
         <div class="settings-grid">
             <div class="data-btn" onclick="exportData()">EXPORT SAVE</div>
             <div class="data-btn" onclick="document.getElementById('import-file').click()">IMPORT SAVE</div>
-            <div class="data-btn" style="grid-column: span 2;" onclick="promptWebhookSetup()">⚙️ SET WEBHOOK URL</div>
+            <div class="data-btn" onclick="toggleSound()">🔊 SOUND: <span id="sound-status">ON</span></div>
+            <div class="data-btn" onclick="promptWebhookSetup()">⚙️ WEBHOOK</div>
             <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
         </div>
         <button class="btn btn-red" style="justify-content: center; font-size: 18px; min-height: 40px;" onclick="promptNuclearReset()">⚠️ RESET ALL PROGRESS</button>
@@ -505,6 +506,7 @@
         window.addEventListener('click', initAudio, { once: true });
         
         function playDing() {
+            if (!state.soundEnabled) return;
             initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
             osc.type = 'square'; osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
             osc.frequency.exponentialRampToValueAtTime(1760, audioCtx.currentTime + 0.1);
@@ -513,6 +515,7 @@
         }
 
         function playBloop() {
+            if (!state.soundEnabled) return;
             initAudio(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
             osc.type = 'square'; osc.frequency.setValueAtTime(300, audioCtx.currentTime);
             osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.15);
@@ -521,18 +524,38 @@
         }
 
         function playAlarmBeeps() {
+            if (!state.soundEnabled) return;
             initAudio();
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 4; i++) {
                 setTimeout(() => {
                     const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-                    osc.type = 'square'; osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-                }, i * 250);
+                    osc.type = 'square'; osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+                    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+                }, i * 300);
             }
         }
 
-        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate([100, 50, 100]); }
+        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate([120, 60, 120, 60, 200]); }
+
+        function requestNotificationPermission() {
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        }
+
+        function fireNativeNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: body,
+                        icon: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>"
+                    });
+                } catch (e) {
+                    console.log("Notification fallback error", e);
+                }
+            }
+        }
 
         const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', dateOptions);
@@ -542,7 +565,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 3.4,
+            version: 3.5,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -550,6 +573,7 @@
             lastDate: getISODate(),
             studyBlocks: 0,
             webhookUrl: "",
+            soundEnabled: true,
             timerEndTime: null,
             timerMinutesTotal: 0,
             dailyRoutine: [
@@ -580,12 +604,21 @@
             }
             if (!state.flexibleEngine) state.flexibleEngine = [...DEFAULT_STATE.flexibleEngine];
             if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
+            if (state.soundEnabled === undefined) state.soundEnabled = true;
         }
 
         let pendingSpendCost = 0;
         let pendingSpendMins = 0;
         let pendingSpendName = "";
         let countdownInterval = null;
+
+        function toggleSound() {
+            triggerHaptic();
+            state.soundEnabled = !state.soundEnabled;
+            saveState();
+            document.getElementById('sound-status').innerText = state.soundEnabled ? "ON" : "OFF";
+            if (state.soundEnabled) playDing();
+        }
 
         function sendWebhook(title, description, color = 16777215) {
             if (!state.webhookUrl || state.webhookUrl.trim() === "") return;
@@ -748,6 +781,7 @@
             state.todayLog.spent += pendingSpendCost;
 
             if (startTimer) {
+                requestNotificationPermission();
                 const now = Date.now();
                 state.timerEndTime = now + (pendingSpendMins * 60 * 1000);
                 startCountdownEngine();
@@ -786,6 +820,7 @@
                     
                     playAlarmBeeps();
                     triggerHaptic();
+                    fireNativeNotification("🚨 TORO TRACKER // DOWNTIME ENDED", "Downtime session has expired! Time to get back to work! ⚡");
                     sendWebhook("DOWNTIME ENDED", "🚨 **Downtime session has expired!** Time to get back to work! ⚡");
                     customAlert("🚨 DOWNTIME BREAK OVER! GET BACK TO WORK!");
                 } else {
@@ -880,6 +915,7 @@
             document.getElementById('token-display').innerText = Math.max(0, state.tokens).toFixed(2);
             document.getElementById('vault-display').innerText = "$" + state.vaultCash.toFixed(2);
             document.getElementById('streak-display').innerText = state.streak;
+            document.getElementById('sound-status').innerText = state.soundEnabled ? "ON" : "OFF";
             
             document.getElementById('log-earned').innerText = "+" + (state.todayLog?.earned || 0).toFixed(2);
             document.getElementById('log-spent').innerText = "-" + (state.todayLog?.spent || 0).toFixed(2);
