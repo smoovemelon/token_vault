@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#ffffff">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Gooba Tracker">
+    <meta name="apple-mobile-web-app-title" content="Toro Tracker">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Gooba Tracker</title>
+    <title>Toro Tracker</title>
     
     <!-- INLINE PIXEL CAT ICON (Black lines, White Background) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='white'/><rect x='3' y='4' width='2' height='2' fill='black'/><rect x='11' y='4' width='2' height='2' fill='black'/><rect x='5' y='5' width='6' height='1' fill='black'/><rect x='2' y='6' width='1' height='5' fill='black'/><rect x='13' y='6' width='1' height='5' fill='black'/><rect x='3' y='11' width='10' height='1' fill='black'/><rect x='4' y='7' width='2' height='2' fill='black'/><rect x='10' y='7' width='2' height='2' fill='black'/><rect x='7' y='9' width='2' height='1' fill='black'/></svg>">
@@ -292,7 +292,7 @@
     <div class="container">
         <!-- HEADER -->
         <div class="header">
-            <h1>GOOBA TRACKER</h1>
+            <h1>TORO TRACKER</h1>
             <p id="current-date">DATE LOADING...</p>
         </div>
 
@@ -497,7 +497,7 @@
         }
 
         const DEFAULT_STATE = {
-            version: 2.3,
+            version: 3.1,
             tokens: 0.00,
             vaultCash: 0.00,
             streak: 0,
@@ -517,7 +517,12 @@
             todayLog: { earned: 0.00, spent: 0.00, banked: 0.00 }
         };
 
-        let loadedState = JSON.parse(localStorage.getItem('tokenApp'));
+        let loadedState = JSON.parse(localStorage.getItem('toroTrackerApp'));
+        if (!loadedState) {
+            const oldLoad = JSON.parse(localStorage.getItem('tokenApp'));
+            if (oldLoad) loadedState = oldLoad;
+        }
+
         let state = { ...DEFAULT_STATE };
         if (loadedState) {
             state = { ...DEFAULT_STATE, ...loadedState };
@@ -530,12 +535,26 @@
             if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
         }
 
-        function sendWebhook(message) {
+        // Aesthetically Pleasing Discord Pixel Embeds
+        function sendWebhook(title, description, color = 16777215) {
             if (!state.webhookUrl || state.webhookUrl.trim() === "") return;
+            
+            const payload = {
+                embeds: [{
+                    title: `🐾 TORO TRACKER // ${title}`,
+                    description: description,
+                    color: color, // 16777215 = White in decimal (1-bit retro look)
+                    footer: {
+                        text: `TOKENS: ${state.tokens.toFixed(2)} 🪙 | VAULT: $${state.vaultCash.toFixed(2)} 💵`
+                    },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
             fetch(state.webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: `🐱 **Gooba Tracker:** ${message}` })
+                body: JSON.stringify(payload)
             }).catch(err => console.error("Webhook failed", err));
         }
 
@@ -546,9 +565,9 @@
 
             if (state.lastDate === yesterdayStr && state.baselineMet) { 
                 state.streak += 1; 
-                sendWebhook(`🔥 Streak updated to **${state.streak} Days**!`);
+                sendWebhook("STREAK UPDATED", `🔥 Baseline streak advanced to **${state.streak} Days**!`);
             } else { 
-                if (state.streak > 0) sendWebhook(`💔 Streak reset! Missed baseline completion.`);
+                if (state.streak > 0) sendWebhook("STREAK RESET", `💔 Baseline missed. Streak reset to 0.`);
                 state.streak = 0; 
             }
             state.dailyRoutine.forEach(h => h.checked = false);
@@ -608,8 +627,8 @@
 
         function executeNuclearReset() {
             triggerHaptic(); playBloop();
-            sendWebhook(`⚠️ **NUCLEAR RESET:** All progress and stats were wiped clean.`);
-            localStorage.removeItem('tokenApp');
+            sendWebhook("NUCLEAR RESET", `⚠️ All progress, tokens, vault cash, and streaks were wiped clean.`);
+            localStorage.removeItem('toroTrackerApp');
             state = { ...DEFAULT_STATE };
             saveState();
             closeModal();
@@ -633,7 +652,7 @@
                 saveState();
                 playDing();
                 customAlert(urlVal ? "WEBHOOK URL SAVED!" : "WEBHOOK URL CLEARED.");
-                if (urlVal) sendWebhook("🔗 Discord Webhook successfully linked to Gooba Tracker!");
+                if (urlVal) sendWebhook("WEBHOOK CONNECTED", "🔗 Discord Webhook successfully linked to Toro Tracker!");
             }
         }
 
@@ -714,7 +733,7 @@
             document.getElementById('new-h-pay').value = '';
             
             evaluateBaseline(); saveState(); renderEditList();
-            sendWebhook(`⚙️ Added ${currentEditMode} item: **[${icon}] ${name}** (+${payout.toFixed(2)} tokens)`);
+            sendWebhook("ROUTINE UPDATED", `⚙️ Added ${currentEditMode} item: **[${icon}] ${name}** (+${payout.toFixed(2)} tokens)`);
         }
 
         function deleteItem(index) {
@@ -727,7 +746,7 @@
             }
             list.splice(index, 1);
             evaluateBaseline(); saveState(); renderEditList();
-            sendWebhook(`⚙️ Deleted ${currentEditMode} item: **${item.name}**`);
+            sendWebhook("ROUTINE UPDATED", `⚙️ Deleted ${currentEditMode} item: **${item.name}**`);
         }
 
         function updateUI() {
@@ -787,7 +806,7 @@
         function saveState() { 
             state.tokens = Math.round(state.tokens * 100) / 100;
             state.vaultCash = Math.round(state.vaultCash * 100) / 100;
-            localStorage.setItem('tokenApp', JSON.stringify(state)); 
+            localStorage.setItem('toroTrackerApp', JSON.stringify(state)); 
             updateUI(); 
         }
 
@@ -814,7 +833,7 @@
                 state.todayLog.earned += habit.payout;
                 evaluateBaseline(); 
                 saveState();
-                sendWebhook(`✅ Completed: **${habit.name}** (+${habit.payout.toFixed(2)} tokens) | Balance: ${state.tokens.toFixed(2)} 🪙`);
+                sendWebhook("HABIT LOCKED", `✅ Completed: **${habit.name}** (+${habit.payout.toFixed(2)} tokens)`);
             });
         }
 
@@ -832,7 +851,7 @@
                 state.tokens += flexItem.payout;
                 state.todayLog.earned += flexItem.payout;
                 saveState();
-                sendWebhook(`🏋️ Completed: **${flexItem.name}** (+${flexItem.payout.toFixed(2)} tokens) | Balance: ${state.tokens.toFixed(2)} 🪙`);
+                sendWebhook("TASK LOCKED", `🐾 Completed: **${flexItem.name}** (+${flexItem.payout.toFixed(2)} tokens)`);
             });
         }
 
@@ -844,7 +863,7 @@
                 state.tokens += 1.50;
                 state.todayLog.earned += 1.50;
                 saveState();
-                sendWebhook(`💻 Logged **1 hr study block** (+1.50 tokens) | Total Hours: ${state.studyBlocks}`);
+                sendWebhook("STUDY LOGGED", `💻 Logged **1 hr study block** (+1.50 tokens) | Total Hours: ${state.studyBlocks}`);
             } else if (delta < 0 && state.studyBlocks > 0) {
                 if (state.tokens >= 1.50) {
                     playBloop(); 
@@ -852,7 +871,7 @@
                     state.tokens -= 1.50;
                     state.todayLog.earned = Math.max(0, state.todayLog.earned - 1.50);
                     saveState();
-                    sendWebhook(`↩️ Undid 1 hr study block | Total Hours: ${state.studyBlocks}`);
+                    sendWebhook("STUDY UNDONE", `↩️ Undid 1 hr study block | Total Hours: ${state.studyBlocks}`);
                 } else {
                     playBloop();
                     customAlert("CANNOT UNDO STUDY: TOKENS ALREADY SPENT!");
@@ -868,7 +887,7 @@
                 state.tokens -= cost; 
                 state.todayLog.spent += cost;
                 saveState(); 
-                sendWebhook(`🛋️ Spent **${cost.toFixed(2)} tokens** on ${name} | Balance: ${state.tokens.toFixed(2)} 🪙`);
+                sendWebhook("DOWNTIME REDEEMED", `🛋️ Spent **${cost.toFixed(2)} tokens** on ${name}`);
             } else { 
                 customAlert(`NOT ENOUGH TOKENS FOR ${name}!`); 
             }
@@ -882,7 +901,7 @@
                 state.vaultCash += 2.50; 
                 state.todayLog.banked += 2.50;
                 saveState();
-                sendWebhook(`💵 Banked 1.00 token ➔ **$2.50** added to Wardrobe Vault | Total Vault: $${state.vaultCash.toFixed(2)}`);
+                sendWebhook("VAULT BANKING", `💵 Banked 1.00 token ➔ **$2.50** added to Wardrobe Vault | Total Vault: $${state.vaultCash.toFixed(2)}`);
             } else { 
                 customAlert("NOT ENOUGH TOKENS TO BANK!"); 
             }
@@ -899,7 +918,7 @@
                 playBloop(); 
                 state.vaultCash -= amount; 
                 saveState();
-                sendWebhook(`🛍️ Spent **$${amount.toFixed(2)}** from Vault cash | Remaining Vault: $${state.vaultCash.toFixed(2)}`);
+                sendWebhook("VAULT SPENDING", `🛍️ Spent **$${amount.toFixed(2)}** from Vault cash | Remaining Vault: $${state.vaultCash.toFixed(2)}`);
             });
         }
 
@@ -907,7 +926,7 @@
             triggerHaptic(); playDing();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const dlNode = document.createElement('a'); dlNode.setAttribute("href", dataStr);
-            dlNode.setAttribute("download", `gooba_tracker_backup_${todayStr}.json`);
+            dlNode.setAttribute("download", `toro_tracker_backup_${todayStr}.json`);
             document.body.appendChild(dlNode); dlNode.click(); dlNode.remove();
         }
 
@@ -923,7 +942,7 @@
                         if (!state.todayLog) state.todayLog = { earned: 0.00, spent: 0.00, banked: 0.00 };
                         evaluateBaseline(); saveState(); playDing(); 
                         customAlert("DATA RESTORED SUCCESSFULLY!");
-                        sendWebhook(`📥 Data successfully restored via import save.`);
+                        sendWebhook("DATA RESTORED", `📥 Data successfully restored via import save.`);
                     } else { customAlert("INVALID BACKUP FILE."); }
                 } catch (err) { customAlert("ERROR READING FILE."); }
             };
